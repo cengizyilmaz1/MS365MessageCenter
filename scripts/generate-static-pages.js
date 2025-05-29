@@ -34,10 +34,25 @@ messages.forEach(message => {
   <link rel="canonical" href="https://message.cengizyilmaz.net/message/${messageId}" />
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div class="message-container">
+      <h1>${message.title}</h1>
+      <div class="message-content">
+        ${message.messageBody || ''}
+      </div>
+      <div class="message-meta">
+        <p>Last Modified: ${new Date(message.lastModifiedDateTime).toLocaleDateString()}</p>
+        <p>Category: ${message.category || 'N/A'}</p>
+      </div>
+    </div>
+  </div>
   <script type="module" src="/assets/index.js"></script>
   <script>
     window.__INITIAL_MESSAGE__ = ${JSON.stringify(message)};
+    window.__INITIAL_STATE__ = {
+      messages: ${JSON.stringify(messages)},
+      currentMessage: ${JSON.stringify(message)}
+    };
   </script>
 </body>
 </html>`;
