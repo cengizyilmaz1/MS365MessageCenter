@@ -37,7 +37,21 @@
     <title>Microsoft 365 Message Center Viewer - Service Updates & Announcements</title>
   </head>
   <body>
-    <div id="root" role="main" aria-label="Microsoft 365 Message Center Application"></div>
+    <div id="root" role="main" aria-label="Microsoft 365 Message Center Application">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading Microsoft 365 Message Center...</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Fallback for loading state
+      window.addEventListener('load', function() {
+        const root = document.getElementById('root');
+        if (root && root.children.length === 1 && root.children[0].classList.contains('loading')) {
+          console.log('Application failed to initialize properly');
+        }
+      });
+    </script>
   </body>
 </html>

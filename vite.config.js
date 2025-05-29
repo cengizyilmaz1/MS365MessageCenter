@@ -1,10 +1,10 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+const { defineConfig } = require('vite');
+const react = require('@vitejs/plugin-react');
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+module.exports = defineConfig({
   plugins: [react()],
-  base: mode === 'production' ? '/' : '/',
+  base: '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -15,8 +15,19 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
+    sourcemap: true,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: false,
+      },
+    },
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-})); 
+  server: {
+    port: 3000,
+    open: true,
+  },
+}); 
