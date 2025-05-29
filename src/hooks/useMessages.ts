@@ -113,7 +113,26 @@ export const useMessages = () => {
       setLoading(true);
       setError(null);
       
-      // Fetch from the JSON file
+      // Try to get initial message from window object
+      const initialMessage = window.__INITIAL_MESSAGE__;
+      const initialState = window.__INITIAL_STATE__;
+      
+      if (initialState?.messages) {
+        const readStatus = loadReadStatus();
+        const transformedMessages = initialState.messages.map((msg: any) => {
+          const transformed = transformMessage(msg);
+          const messageId = transformed.id || transformed.Id;
+          if (messageId) {
+            transformed.isRead = readStatus[messageId] || false;
+          }
+          return transformed;
+        });
+        setMessages(transformedMessages);
+        setLoading(false);
+        return;
+      }
+      
+      // Fallback to fetching from JSON file
       const response = await fetch('/@data/messages.json');
       if (!response.ok) {
         throw new Error('Failed to fetch messages');
@@ -202,14 +221,13 @@ export const useMessages = () => {
 
     // Date range filter
     if (filter.dateRange.start || filter.dateRange.end) {
-      const dateString = message.publishedDate || message.StartDateTime;
-      if (!dateString) return false;
+      const messageDate = parseISO(message.publishedDate);
       
-      const messageDate = new Date(dateString);
-      if (filter.dateRange.start && messageDate < filter.dateRange.start) {
+      if (filter.dateRange.start && isBefore(messageDate, filter.dateRange.start)) {
         return false;
       }
-      if (filter.dateRange.end && messageDate > filter.dateRange.end) {
+      
+      if (filter.dateRange.end && isAfter(messageDate, filter.dateRange.end)) {
         return false;
       }
     }
@@ -225,19 +243,20 @@ export const useMessages = () => {
   // Get unique services for filter
   const availableServices = [...new Set(messages.map(msg => msg.service || msg.Services?.[0] || 'Microsoft 365'))];
 
-  // Fetch messages on mount
+  // Load messages on mount
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
 
   return {
-    messages: filteredMessages,
+    messages,
+    filteredMessages,
     loading,
     error,
-    markAsRead,
     filter,
     updateFilter,
-    refetch: fetchMessages,
+    markAsRead,
+    refresh: fetchMessages,
     availableServices
   };
 };

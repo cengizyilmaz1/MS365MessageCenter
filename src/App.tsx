@@ -10,7 +10,7 @@ import Terms from './pages/Terms';
 
 function App() {
   return (
-    <Router basename={import.meta.env.PROD ? '/microsoft-message-center-viewer' : '/'}>
+    <Router basename="/">
       <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <Header />
         <main className="flex-grow">
