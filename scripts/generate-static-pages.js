@@ -50,6 +50,19 @@ messages.forEach(message => {
   }
 });
 
+// Helper function to safely format date
+const formatDate = (dateStr) => {
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      return new Date().toISOString(); // Return current date if invalid
+    }
+    return date.toISOString();
+  } catch (error) {
+    return new Date().toISOString(); // Return current date if error
+  }
+};
+
 // Generate sitemap
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -61,7 +74,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   ${messages.map(message => `
   <url>
     <loc>https://message.cengizyilmaz.net/message/${message.id}</loc>
-    <lastmod>${new Date(message.lastModifiedDateTime).toISOString()}</lastmod>
+    <lastmod>${formatDate(message.lastModifiedDateTime)}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`).join('')}
