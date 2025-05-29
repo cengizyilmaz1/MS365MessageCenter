@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: mode === 'production' ? '/microsoft-message-center-viewer/' : '/',
+  base: mode === 'production' ? '/MS365MessageCenter/' : '/',
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
