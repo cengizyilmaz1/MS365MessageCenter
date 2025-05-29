@@ -24,6 +24,3 @@ dist-ssr
 *.sw?
 .env
 
-# Build and config files
-@build/config-m365.json
-@build/secrets-m365.json
