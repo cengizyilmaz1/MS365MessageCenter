@@ -1,0 +1,49 @@
+name: update-message-center-data
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - '@data/**'
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0,30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: write
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:          
+      - uses: actions/checkout@v3
+      
+      - name: Setup config
+        run: |
+          echo '{
+            "tenantId": "${{ secrets.TENANT_ID }}",
+            "clientId": "${{ secrets.CLIENT_ID }}"
+          }' > ./@build/config-m365.json
+        shell: pwsh
+        
+      - name: Get messages from Message Center
+        run: |
+          ./@build/Update-Site.ps1 -GraphSecret ${{ secrets.GRAPH_SECRET }}
+        shell: pwsh
+        
+      - name: Update repo
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            echo "Updating repo"
+            git config --global user.name 'Cengiz YILMAZ'
+            git config --global user.email 'cengizyilmaz1@users.noreply.github.com'
+            git add -A && git commit -m "Daily automation"
+            git push
+          else
+            echo "No changes"
+          fi

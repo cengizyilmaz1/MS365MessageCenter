@@ -1,0 +1,45 @@
+{
+  "ActionRequiredByDateTime": null,
+  "Attachments": null,
+  "AttachmentsArchive": null,
+  "Body": {
+    "Content": "<p>We will soon update Microsoft Defender for Office (MDO) to enrich the logging of remediation actions initiated through automated investigation and response (AIR). When customers approve a pending action produced by AIR, the action logging associated to the remediated message will indicate the action originated through AIR, to provide customers with additional clarity.\n</p><p>This message is associated with Microsoft 365 Roadmap ID <a href=\"https://www.microsoft.com/microsoft-365/roadmap?filters=&amp;searchterms=389376\" target=\"_blank\">389376</a>.\n</p><p><b>When this will happen:</b>\n</p><p>General Availability (Worldwide, GCC): We will begin rolling out early February 2025 and expect to be complete by mid-February 2025.\n</p><p><b>How this will affect your organization:</b>\n</p><p>After this rollout, in Threat Explorer, the <i>Additional action</i> will display <i>Automated remediation: admin approved</i> when a message was remediated as a result of approving an AIR action. An additional <i>Automated remediation</i> filter option will be available in the <i>Additional action</i> filter to show only messages remediated as a result of AIR action. In Advanced Hunting, <i>ActionType</i> will display <i>Automated remediation</i> and the <i>ActionTrigger</i> will show <i>AdminApproved</i> for messages remediated as a result of AIR action; customers can use these values in Advanced Hunting queries. The email entity will reflect the event type as<i> AIR.</i>\n</p><p>Your organization will notice updated logging in Threat Explorer, Advanced Hunting, and on the email entity for remediations that occur as a result of approving actions produced by AIR. Manual admin action remediation logging will not be affected or changed by this rollout.\n</p><p>This change will be available by default.\n</p><p>In Advanced Hunting, use ActionType <i>Automated remediation</i> and ActionTrigger <i>AdminApproved</i> to review remediation actions originated from AIR:\n</p><p><img src=\"https://cxcs.microsoft.net/file/messagecenter/en-us/d9ee37b7-f7a3-40b3-a6f8-6ebdd94b08f6\" style=\"width: 400px;\" alt=\"admin controls\">\n</p><p>In Threat Explorer, use the <i>Automated Remediation</i> option in <i>Additional action</i> to review remediation actions originated from AIR:\n</p><p><img src=\"https://cxcs.microsoft.net/file/messagecenter/en-us/93260f96-cb71-4e22-b614-27ba0f62f88e\" style=\"width: 400px;\" alt=\"admin controls\">\n</p><p><b>What you need to do to prepare:</b>\n</p><p>Be prepared for the logging update and adjust any reporting based on these fields accordingly.\n</p><p>This rollout will happen automatically by the specified date with no admin action required before the rollout. Review any reporting that uses these fields to determine the impact for your organization. You may want to notify your admins about this change and update any relevant documentation.</p>",
+    "ContentType": "html"
+  },
+  "Category": "planForChange",
+  "Details": [
+    {
+      "Name": "RoadmapIds",
+      "Value": "389376"
+    },
+    {
+      "Name": "Summary",
+      "Value": "Microsoft Defender for Office will update logging for AIR-initiated remediation actions to provide more clarity. This will affect logging in Threat Explorer, Advanced Hunting, and email entities. The rollout begins early February 2025 and completes by mid-February. No admin action is required before the rollout."
+    },
+    {
+      "Name": "Platforms",
+      "Value": "Web"
+    }
+  ],
+  "EndDateTime": "2025-04-25T07:00:00Z",
+  "HasAttachments": false,
+  "Id": "MC978927",
+  "IsMajorChange": false,
+  "LastModifiedDateTime": "2025-01-14T00:19:39.097Z",
+  "Services": [
+    "Microsoft Defender XDR"
+  ],
+  "Severity": "normal",
+  "StartDateTime": "2025-01-14T00:19:17Z",
+  "Tags": [
+    "Feature update",
+    "Admin impact"
+  ],
+  "Title": "Microsoft Defender for Office: Updates to AIR-initiated remediation logging",
+  "ViewPoint": {
+    "IsArchived": null,
+    "IsFavorited": null,
+    "IsRead": null
+  },
+  "AdditionalProperties": {}
+}

@@ -1,0 +1,46 @@
+{
+  "ActionRequiredByDateTime": null,
+  "Attachments": null,
+  "AttachmentsArchive": null,
+  "Body": {
+    "Content": "<p>Updated October 23, 2024: We have updated the rollout timeline below. Thank you for your patience.</p><p>We are introducing a new people experiences category in Adoption Score in the Microsoft 365 admin center. The new category helps organizations understand the adoption of Microsoft Copilot features in Microsoft 365. This AI assistance category includes a score on a 100-point scale to help track the overall adoption of Microsoft Copilot for Microsoft 365. This score for the AI assistance category will be available in preview and will not impact the overall Adoption Score.&nbsp;</p><p>This message is associated with Microsoft 365 Roadmap ID <a href=\"https://www.microsoft.com/microsoft-365/roadmap?rtc=1%26filters=&amp;searchterms=185700\" target=\"_blank\"><font color=\"#000000\" style=\"\">185700</font></a></p><p><b>When this will happen:</b></p><p>Preview: We will begin rolling out late November 2023 and expect to complete the rollout by early December 2023.</p><p>Worldwide: We will begin rolling out early January 2025 (previously mid-October) and expect to complete by late January 2025 (previously mid-November).</p><p><b>How this will affect your organization:</b></p><p>Organizations will see a new category in the Adoption Score in Microsoft 365 admin center.</p><p><img src=\"https://cxcs.microsoft.net/file/messagecenter/en-us/d6150494-57b0-40d8-860e-350001f97efc\" style=\"width: 400px;\"><br></p><p><b>What you need to do to prepare:</b></p><p>You may want to notify your users about this change and update any relevant documentation as appropriate.</p>",
+    "ContentType": "html"
+  },
+  "Category": "stayInformed",
+  "Details": [
+    {
+      "Name": "RoadmapIds",
+      "Value": "185700"
+    },
+    {
+      "Name": "Summary",
+      "Value": "The Microsoft 365 admin center is introducing a new AI assistance category in Adoption Score to track the adoption of Microsoft Copilot features. This preview feature, represented by a 100-point scale, will roll out from late November 2023 to January 2025. Organizations should prepare by informing users and updating documentation. Roadmap ID: 185700."
+    },
+    {
+      "Name": "Platforms",
+      "Value": "Web"
+    }
+  ],
+  "EndDateTime": "2025-03-03T07:00:00Z",
+  "HasAttachments": false,
+  "Id": "MC694129",
+  "IsMajorChange": false,
+  "LastModifiedDateTime": "2024-10-23T22:38:35.25Z",
+  "Services": [
+    "Microsoft 365 suite"
+  ],
+  "Severity": "normal",
+  "StartDateTime": "2023-11-29T01:31:58Z",
+  "Tags": [
+    "Updated message",
+    "Feature update",
+    "Admin impact"
+  ],
+  "Title": "Microsoft 365 admin center:  Adoption Score AI assistance category",
+  "ViewPoint": {
+    "IsArchived": null,
+    "IsFavorited": null,
+    "IsRead": null
+  },
+  "AdditionalProperties": {}
+}
