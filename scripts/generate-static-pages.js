@@ -42,6 +42,11 @@ async function copyDirectory(src, dest) {
     const destPath = path.join(dest, entry.name);
 
     if (entry.isDirectory()) {
+      // Skip archive and backups directories
+      if (entry.name === 'archive' || entry.name === 'backups') {
+        log.warning(`Skipping ${entry.name} directory to reduce build size`);
+        continue;
+      }
       await copyDirectory(srcPath, destPath);
     } else {
       await fs.copyFile(srcPath, destPath);
@@ -62,11 +67,11 @@ async function generateStaticPages() {
     log.info('Preparing dist directory...');
     await ensureDirectoryExists(distPath);
     
-    // 2. Copy public files
+    // 2. Copy public files (excluding index.html which is handled by Vite)
     log.info('Copying public files...');
     const publicFiles = await fs.readdir(publicPath);
     for (const file of publicFiles) {
-      if (file !== 'index.html') {
+      if (file !== 'index.html' && file !== 'data') { // Skip index.html and data dir
         const srcPath = path.join(publicPath, file);
         const destPath = path.join(distPath, file);
         const stat = await fs.stat(srcPath);
@@ -130,12 +135,38 @@ async function generateStaticPages() {
     );
     log.success('Build info generated');
     
+    // Calculate and log build size
+    const buildSize = await calculateDirectorySize(distPath);
+    log.info(`Total build size: ${(buildSize / 1024 / 1024).toFixed(2)} MB`);
+    
+    if (buildSize > 1000 * 1024 * 1024) { // If over 1GB
+      log.error(`Build size exceeds 1GB! Current size: ${(buildSize / 1024 / 1024).toFixed(2)} MB`);
+      log.warning('Check for unnecessary files or large assets');
+    }
+    
     log.section('✨ Static site generation completed successfully!');
     
   } catch (error) {
     log.error(`Error during static generation: ${error.message}`);
     process.exit(1);
   }
+}
+
+async function calculateDirectorySize(dirPath) {
+  let totalSize = 0;
+  const files = await fs.readdir(dirPath, { withFileTypes: true });
+  
+  for (const file of files) {
+    const filePath = path.join(dirPath, file.name);
+    if (file.isDirectory()) {
+      totalSize += await calculateDirectorySize(filePath);
+    } else {
+      const stats = await fs.stat(filePath);
+      totalSize += stats.size;
+    }
+  }
+  
+  return totalSize;
 }
 
 async function generateSitemap(distPath, dataPath) {

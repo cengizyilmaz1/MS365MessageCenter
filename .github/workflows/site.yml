@@ -34,6 +34,13 @@ jobs:
           npm run build
           ls -la dist/
           ls -la dist/assets/
+      - name: Clean up unnecessary files
+        run: |
+          # Remove archive and backup directories if they exist
+          rm -rf dist/archive dist/backups
+          # Check final size
+          echo "Final dist size:"
+          du -sh dist/
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
