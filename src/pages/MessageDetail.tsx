@@ -4,6 +4,8 @@ import { useMessages } from '../hooks/useMessages';
 import { ArrowLeft, AlertTriangle, Calendar, Clock, Tag, Layers, Hash, ExternalLink, Shield, BookOpen, Users, Globe, AlertCircle, Copy, Share2, Check, FileText } from 'lucide-react';
 import { MessageSeverity } from '../types';
 import { Helmet } from 'react-helmet-async';
+import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 // Map actual values to our enums
 const mapSeverity = (severity: string): MessageSeverity => {
@@ -140,22 +142,30 @@ const MessageDetail: React.FC = () => {
 
   if (!message) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-          <AlertTriangle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Message Not Found</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The message you're looking for doesn't exist or has been removed.
-          </p>
-          <Link
-            to="/"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-          >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Back to Messages
-          </Link>
+      <>
+        <SEO 
+          title="Message Not Found"
+          description="The requested message could not be found."
+          type="website"
+        />
+        <StructuredData type="website" />
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
+            <AlertTriangle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Message Not Found</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              The message you're looking for doesn't exist or has been removed.
+            </p>
+            <Link
+              to="/"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Back to Messages
+            </Link>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -337,341 +347,354 @@ const MessageDetail: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Helmet>
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={keywords} />
-        <meta name="author" content={author} />
-        <link rel="canonical" href={pageUrl} />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content={pageUrl} />
-        <meta property="og:image" content={pageImage} />
-        <meta property="og:locale" content="tr_TR" />
-        <meta property="article:published_time" content={publishedTime} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDescription} />
-        <meta name="twitter:image" content={pageImage} />
-        <meta name="twitter:creator" content="@cengizyilmaznet" />
-        <link rel="alternate" hrefLang="tr" href={pageUrl} />
-        <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
-      </Helmet>
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 mb-6 transition-colors group"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Back to Messages
-        </button>
+    <>
+      <SEO 
+        title={message.title || message.Title || 'Microsoft 365 Update'}
+        description={message.summary || message.Body?.Content?.substring(0, 160) || 'Microsoft 365 service update'}
+        type="article"
+        url={`https://message.cengizyilmaz.net/message/${message.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+        keywords={[
+          ...(message.tags || message.Tags || []),
+          message.service || message.Services?.[0] || 'Microsoft 365',
+          message.category || message.Category || 'Update'
+        ]}
+      />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <Helmet>
+          <title>{pageTitle}</title>
+          <meta name="description" content={pageDescription} />
+          <meta name="keywords" content={keywords} />
+          <meta name="author" content={author} />
+          <link rel="canonical" href={pageUrl} />
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={pageTitle} />
+          <meta property="og:description" content={pageDescription} />
+          <meta property="og:url" content={pageUrl} />
+          <meta property="og:image" content={pageImage} />
+          <meta property="og:locale" content="tr_TR" />
+          <meta property="article:published_time" content={publishedTime} />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={pageTitle} />
+          <meta name="twitter:description" content={pageDescription} />
+          <meta name="twitter:image" content={pageImage} />
+          <meta name="twitter:creator" content="@cengizyilmaznet" />
+          <link rel="alternate" hrefLang="tr" href={pageUrl} />
+          <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
+        </Helmet>
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 mb-6 transition-colors group"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Back to Messages
+          </button>
 
-        {/* Header Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-            <div className="flex-1">
-              <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
-                {message.title || message.Title}
-              </h1>
-              
-              {/* Action Badges */}
-              {(isMajorChange(message) || isActionRequired(message)) && (
-                <div className="flex flex-wrap gap-3 mb-6">
-                  {isMajorChange(message) && (
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-700 dark:text-orange-400 rounded-lg border border-orange-200 dark:border-orange-800 shadow-sm">
-                      <AlertCircle className="h-5 w-5" />
-                      <span className="text-base font-bold">Major Change</span>
-                    </div>
-                  )}
-                  {isActionRequired(message) && (
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 text-red-700 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800 shadow-sm">
-                      <AlertTriangle className="h-5 w-5" />
-                      <span className="text-base font-bold">Action Required</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                {getSeverityBadge(message.severity || mapSeverity(message.Severity))}
+          {/* Header Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+              <div className="flex-1">
+                <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
+                  {message.title || message.Title}
+                </h1>
+                
+                {/* Action Badges */}
+                {(isMajorChange(message) || isActionRequired(message)) && (
+                  <div className="flex flex-wrap gap-3 mb-6">
+                    {isMajorChange(message) && (
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-700 dark:text-orange-400 rounded-lg border border-orange-200 dark:border-orange-800 shadow-sm">
+                        <AlertCircle className="h-5 w-5" />
+                        <span className="text-base font-bold">Major Change</span>
+                      </div>
+                    )}
+                    {isActionRequired(message) && (
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 text-red-700 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800 shadow-sm">
+                        <AlertTriangle className="h-5 w-5" />
+                        <span className="text-base font-bold">Action Required</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               
-              {/* Copy Link and Share Buttons */}
-              <div className="flex gap-2 mt-4">
-                <button
-                  onClick={handleCopyLink}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                >
-                  {copiedLink ? (
-                    <>
-                      <Check className="h-4 w-4" />
-                      <span className="text-sm font-medium">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      <span className="text-sm font-medium">Copy Link</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={handleShare}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  <Share2 className="h-4 w-4" />
-                  <span className="text-sm font-medium">Share</span>
-                </button>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  {getSeverityBadge(message.severity || mapSeverity(message.Severity))}
+                </div>
+                
+                {/* Copy Link and Share Buttons */}
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={handleCopyLink}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    {copiedLink ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        <span className="text-sm font-medium">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        <span className="text-sm font-medium">Copy Link</span>
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    <span className="text-sm font-medium">Share</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Quick Info Grid */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
-                <Hash className="h-5 w-5" />
-                <span className="text-sm font-semibold uppercase tracking-wide">Message ID</span>
-              </div>
-              <a 
-                href={`https://admin.microsoft.com/Adminportal/Home#/MessageCenter/${extractedDetails.messageId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-flex items-center gap-2 group"
-              >
-                {extractedDetails.messageId}
-                <ExternalLink className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-              </a>
-            </div>
-            
-            {extractedDetails.roadmapId && (
+          {/* Quick Info Grid */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
-                  <ExternalLink className="h-5 w-5" />
-                  <span className="text-sm font-semibold uppercase tracking-wide">Roadmap ID</span>
+                  <Hash className="h-5 w-5" />
+                  <span className="text-sm font-semibold uppercase tracking-wide">Message ID</span>
                 </div>
                 <a 
-                  href={`https://www.microsoft.com/en-us/microsoft-365/roadmap?filters=&searchterms=${extractedDetails.roadmapId}`}
+                  href={`https://admin.microsoft.com/Adminportal/Home#/MessageCenter/${extractedDetails.messageId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-flex items-center gap-2 group"
                 >
-                  {extractedDetails.roadmapId}
+                  {extractedDetails.messageId}
                   <ExternalLink className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
                 </a>
               </div>
-            )}
-            
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
-                <Layers className="h-5 w-5" />
-                <span className="text-sm font-semibold uppercase tracking-wide">Category</span>
+              
+              {extractedDetails.roadmapId && (
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
+                    <ExternalLink className="h-5 w-5" />
+                    <span className="text-sm font-semibold uppercase tracking-wide">Roadmap ID</span>
+                  </div>
+                  <a 
+                    href={`https://www.microsoft.com/en-us/microsoft-365/roadmap?filters=&searchterms=${extractedDetails.roadmapId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-flex items-center gap-2 group"
+                  >
+                    {extractedDetails.roadmapId}
+                    <ExternalLink className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                </div>
+              )}
+              
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
+                  <Layers className="h-5 w-5" />
+                  <span className="text-sm font-semibold uppercase tracking-wide">Category</span>
+                </div>
+                <p className="text-lg font-bold text-gray-900 dark:text-white">
+                  {message.category?.replace(/_/g, ' ') || 'General'}
+                </p>
               </div>
-              <p className="text-lg font-bold text-gray-900 dark:text-white">
-                {message.category?.replace(/_/g, ' ') || 'General'}
-              </p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
-                <Globe className="h-5 w-5" />
-                <span className="text-sm font-semibold uppercase tracking-wide">Service</span>
-              </div>
-              <div className="space-y-1">
-                <p className="text-lg font-bold text-gray-900 dark:text-white">{extractedDetails.platform}</p>
-                {message.affectedWorkloads && message.affectedWorkloads.length > 0 && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Platforms: {message.affectedWorkloads.filter(w => w && w.trim() !== '').join(', ')}
-                  </p>
-                )}
+              
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
+                  <Globe className="h-5 w-5" />
+                  <span className="text-sm font-semibold uppercase tracking-wide">Service</span>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-lg font-bold text-gray-900 dark:text-white">{extractedDetails.platform}</p>
+                  {message.affectedWorkloads && message.affectedWorkloads.length > 0 && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Platforms: {message.affectedWorkloads.filter(w => w && w.trim() !== '').join(', ')}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
-                <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                Summary
-              </h2>
-              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-10">
-                {message.summary || 'No summary available'}
-              </p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
+                  <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  Summary
+                </h2>
+                <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-10">
+                  {message.summary || 'No summary available'}
+                </p>
 
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
-                <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                Details
-              </h2>
-              <div 
-                className="prose prose-lg dark:prose-invert max-w-none
-                         prose-headings:font-black prose-headings:text-gray-900 dark:prose-headings:text-white
-                         prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
-                         prose-p:text-gray-700 dark:prose-p:text-gray-300
-                         prose-a:text-blue-600 dark:prose-a:text-blue-400
-                         prose-strong:text-gray-900 dark:prose-strong:text-white
-                         prose-ul:text-gray-700 dark:prose-ul:text-gray-300
-                         prose-ol:text-gray-700 dark:prose-ol:text-gray-300
-                         prose-li:mb-2"
-                dangerouslySetInnerHTML={{ __html: processContent(message.content || message.Body?.Content || '') }}
-              />
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* All Dates Display */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Timeline
-              </h3>
-              <div className="space-y-3">
-                {allDates.published && (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                      <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white">Published Date</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(allDates.published).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {allDates.lastModified && (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                      <Clock className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white">Last Modified</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(allDates.lastModified).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {allDates.actionRequiredBy && (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                      <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white">Action Required By</p>
-                      <p className="text-sm text-red-600 dark:text-red-400 font-medium">
-                        {new Date(allDates.actionRequiredBy).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {allDates.endDate && (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                      <Clock className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white">End Date</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(allDates.endDate).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                )}
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
+                  <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  Details
+                </h2>
+                <div 
+                  className="prose prose-lg dark:prose-invert max-w-none
+                           prose-headings:font-black prose-headings:text-gray-900 dark:prose-headings:text-white
+                           prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
+                           prose-p:text-gray-700 dark:prose-p:text-gray-300
+                           prose-a:text-blue-600 dark:prose-a:text-blue-400
+                           prose-strong:text-gray-900 dark:prose-strong:text-white
+                           prose-ul:text-gray-700 dark:prose-ul:text-gray-300
+                           prose-ol:text-gray-700 dark:prose-ol:text-gray-300
+                           prose-li:mb-2"
+                  dangerouslySetInnerHTML={{ __html: processContent(message.content || message.Body?.Content || '') }}
+                />
               </div>
             </div>
 
-            {/* Tags */}
-            {message.tags && message.tags.length > 0 && (
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* All Dates Display */}
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <Tag className="h-5 w-5" />
-                  Tags
+                  <Calendar className="h-5 w-5" />
+                  Timeline
                 </h3>
-                <div className="flex flex-wrap gap-2">
-                  {message.tags
-                    .filter(tag => !tag.toLowerCase().includes('roadmap id:'))
-                    .map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="space-y-3">
+                  {allDates.published && (
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                        <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white">Published Date</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {new Date(allDates.published).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {allDates.lastModified && (
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                        <Clock className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white">Last Modified</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {new Date(allDates.lastModified).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {allDates.actionRequiredBy && (
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                        <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white">Action Required By</p>
+                        <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                          {new Date(allDates.actionRequiredBy).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {allDates.endDate && (
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                        <Clock className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white">End Date</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {new Date(allDates.endDate).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
 
-            {/* Blog Posts Section - Sidebar */}
-            {selectedPosts.length > 0 && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Blogdan Son Yazılar
-                </h3>
-                <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
-                  {selectedPosts.map((post, index) => (
-                    <a
-                      key={index}
-                      href={post.URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                      aria-label={`Blog yazısı: ${decodeHtmlEntities(post.Title)}`}
-                    >
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1 line-clamp-2">
-                        {decodeHtmlEntities(post.Title)}
-                      </h4>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {new Date(post.Date).toLocaleDateString('tr-TR', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </p>
-                    </a>
-                  ))}
+              {/* Tags */}
+              {message.tags && message.tags.length > 0 && (
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Tag className="h-5 w-5" />
+                    Tags
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {message.tags
+                      .filter(tag => !tag.toLowerCase().includes('roadmap id:'))
+                      .map((tag, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+
+              {/* Blog Posts Section - Sidebar */}
+              {selectedPosts.length > 0 && (
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Blogdan Son Yazılar
+                  </h3>
+                  <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                    {selectedPosts.map((post, index) => (
+                      <a
+                        key={index}
+                        href={post.URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        aria-label={`Blog yazısı: ${decodeHtmlEntities(post.Title)}`}
+                      >
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1 line-clamp-2">
+                          {decodeHtmlEntities(post.Title)}
+                        </h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {new Date(post.Date).toLocaleDateString('tr-TR', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

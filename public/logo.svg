@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="256" fill="#0078D4"/>
+  
+  <!-- Message Icon -->
+  <path d="M384 160H128C110.3 160 96 174.3 96 192V320C96 337.7 110.3 352 128 352H384C401.7 352 416 337.7 416 320V192C416 174.3 401.7 160 384 160Z" fill="white"/>
+  
+  <!-- Message Lines -->
+  <rect x="144" y="208" width="224" height="16" rx="8" fill="#0078D4"/>
+  <rect x="144" y="240" width="160" height="16" rx="8" fill="#0078D4"/>
+  <rect x="144" y="272" width="192" height="16" rx="8" fill="#0078D4"/>
+  
+  <!-- Notification Dot -->
+  <circle cx="352" cy="192" r="16" fill="#FF4B4B"/>
+</svg> 

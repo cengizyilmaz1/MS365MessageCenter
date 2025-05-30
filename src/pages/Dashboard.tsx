@@ -4,6 +4,7 @@ import { Loader, AlertTriangle, Search, Bell, Calendar, Tag, ChevronDown, Chevro
 import { MessageSeverity, MessageCategory } from '../types';
 import { Link } from 'react-router-dom';
 import MessageFilter from '../components/MessageFilter';
+import SEO from '../components/SEO';
 
 const Dashboard: React.FC = () => {
   const { messages, loading, error, markAsRead, filter, updateFilter, availableServices } = useMessages();
@@ -61,7 +62,8 @@ const Dashboard: React.FC = () => {
     );
   }
 
-  const getMessageUrl = (title: string) => {
+  const getMessageUrl = (title: string | undefined) => {
+    if (!title) return '/';
     return `/message/${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   };
 
@@ -148,180 +150,203 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Header Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Message Center</h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Stay updated with all Microsoft 365 service announcements and changes
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
-          <div className="relative z-10">
-            <p className="text-blue-100 text-sm font-medium">Total Messages</p>
-            <h3 className="text-3xl font-bold mt-2">{messages.length}</h3>
-          </div>
-          <Bell className="absolute -right-4 -bottom-4 h-24 w-24 text-blue-400 opacity-20" />
+    <>
+      <SEO 
+        title="Microsoft 365 Message Center"
+        description="Stay updated with all Microsoft 365 service announcements, planned maintenance, and feature updates. Get real-time notifications about service changes, incidents, and improvements."
+        keywords={[
+          'Microsoft 365',
+          'Office 365',
+          'Service Updates',
+          'Maintenance',
+          'Feature Updates',
+          'Service Status',
+          'Microsoft Updates',
+          ...availableServices
+        ]}
+      />
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Header Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Message Center</h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Stay updated with all Microsoft 365 service announcements and changes
+          </p>
         </div>
 
-        <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
-          <div className="relative z-10">
-            <p className="text-orange-100 text-sm font-medium">Major Changes</p>
-            <h3 className="text-3xl font-bold mt-2">{majorChanges.length}</h3>
-            <p className="text-orange-100 text-xs mt-2">{actionRequired.length} action required</p>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+            <div className="relative z-10">
+              <p className="text-blue-100 text-sm font-medium">Total Messages</p>
+              <h3 className="text-3xl font-bold mt-2">{messages.length}</h3>
+            </div>
+            <Bell className="absolute -right-4 -bottom-4 h-24 w-24 text-blue-400 opacity-20" />
           </div>
-          <AlertCircle className="absolute -right-4 -bottom-4 h-24 w-24 text-orange-400 opacity-20" />
-        </div>
 
-        <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
-          <div className="relative z-10">
-            <p className="text-purple-100 text-sm font-medium">Last Update</p>
-            <h3 className="text-2xl font-bold mt-2">
-              {lastUpdateDate ? new Date(lastUpdateDate).toLocaleDateString() : 'N/A'}
-            </h3>
-            <p className="text-purple-100 text-xs mt-2">
-              {lastUpdateDate ? new Date(lastUpdateDate).toLocaleTimeString() : ''}
-            </p>
+          <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
+            <div className="relative z-10">
+              <p className="text-orange-100 text-sm font-medium">Major Changes</p>
+              <h3 className="text-3xl font-bold mt-2">{majorChanges.length}</h3>
+              <p className="text-orange-100 text-xs mt-2">{actionRequired.length} action required</p>
+            </div>
+            <AlertCircle className="absolute -right-4 -bottom-4 h-24 w-24 text-orange-400 opacity-20" />
           </div>
-          <Clock className="absolute -right-4 -bottom-4 h-24 w-24 text-purple-400 opacity-20" />
-        </div>
-      </div>
 
-      {/* Filters */}
-      <div className="mb-6">
-        <MessageFilter filter={filter} onFilterChange={updateFilter} availableServices={availableServices} />
-      </div>
-
-      {/* Messages Table */}
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Messages</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {messages.length} total • {majorChanges.length} major changes • {actionRequired.length} action required
-            </p>
+          <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
+            <div className="relative z-10">
+              <p className="text-purple-100 text-sm font-medium">Last Update</p>
+              <h3 className="text-2xl font-bold mt-2">
+                {lastUpdateDate ? new Date(lastUpdateDate).toLocaleDateString() : 'N/A'}
+              </h3>
+              <p className="text-purple-100 text-xs mt-2">
+                {lastUpdateDate ? new Date(lastUpdateDate).toLocaleTimeString() : ''}
+              </p>
+            </div>
+            <Clock className="absolute -right-4 -bottom-4 h-24 w-24 text-purple-400 opacity-20" />
           </div>
         </div>
 
-        {/* Message Cards */}
+        {/* Filters */}
+        <div className="mb-6">
+          <MessageFilter filter={filter} onFilterChange={updateFilter} availableServices={availableServices} />
+        </div>
+
+        {/* Messages Table */}
         <div className="space-y-4">
-          {sortMessages.map((message) => {
-            const majorChange = isMajorChange(message);
-            const actionReq = isActionRequired(message);
-            const messageId = message.id || message.Id;
-            const messageTitle = message.title || message.Title;
-            const messageService = message.service || message.Services?.[0] || 'Microsoft 365';
-            const messageSummary = message.summary || '';
-            const messageSeverity = message.severity || MessageSeverity.INFORMATIONAL;
-            const messagePublishedDate = message.publishedDate || message.StartDateTime || '';
-            const messageTags = message.tags || message.Tags || [];
-            
-            return (
-              <Link
-                key={messageId}
-                to={getMessageUrl(messageTitle)}
-                onClick={() => markAsRead(messageId)}
-                className="block"
-              >
-                <div
-                  className={`
-                    relative bg-white dark:bg-gray-800 rounded-2xl transition-all duration-300 p-6
-                    hover:shadow-xl hover:scale-[1.02] cursor-pointer
-                    shadow-md border border-gray-100 dark:border-gray-700
-                    ${majorChange || actionReq ? 'ring-2 ring-offset-2 dark:ring-offset-gray-900' : ''}
-                    ${majorChange && actionReq ? 'ring-red-400' : majorChange ? 'ring-orange-400' : actionReq ? 'ring-red-400' : ''}
-                  `}
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Messages</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                {messages.length} total • {majorChanges.length} major changes • {actionRequired.length} action required
+              </p>
+            </div>
+          </div>
+
+          {/* Message Cards */}
+          <div className="space-y-4">
+            {sortMessages.map((message) => {
+              const majorChange = isMajorChange(message);
+              const actionReq = isActionRequired(message);
+              const messageId = message.id || message.Id;
+              const messageTitle = message.title || message.Title;
+              const messageService = message.service || message.Services?.[0] || 'Microsoft 365';
+              const messageSummary = message.summary || '';
+              const messageSeverity = message.severity || MessageSeverity.INFORMATIONAL;
+              const messagePublishedDate = message.publishedDate || message.StartDateTime || '';
+              const messageTags = message.tags || message.Tags || [];
+              
+              return (
+                <Link
+                  key={messageId}
+                  to={getMessageUrl(messageTitle) || '/'}
+                  onClick={() => markAsRead(messageId)}
+                  className="block"
                 >
-                  {/* Priority Bar */}
-                  {(majorChange || actionReq) && (
-                    <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl ${
-                      majorChange && actionReq ? 'bg-gradient-to-b from-orange-500 to-red-500' :
-                      majorChange ? 'bg-orange-500' : 
-                      'bg-red-500'
-                    }`}></div>
-                  )}
+                  <div
+                    className={`
+                      relative bg-white dark:bg-gray-800 rounded-2xl transition-all duration-300 p-6
+                      hover:shadow-xl hover:scale-[1.02] cursor-pointer
+                      shadow-md border border-gray-100 dark:border-gray-700
+                      ${majorChange || actionReq ? 'ring-2 ring-offset-2 dark:ring-offset-gray-900' : ''}
+                      ${majorChange && actionReq ? 'ring-red-400' : majorChange ? 'ring-orange-400' : actionReq ? 'ring-red-400' : ''}
+                    `}
+                  >
+                    {/* Priority Bar */}
+                    {(majorChange || actionReq) && (
+                      <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl ${
+                        majorChange && actionReq ? 'bg-gradient-to-b from-orange-500 to-red-500' :
+                        majorChange ? 'bg-orange-500' : 
+                        'bg-red-500'
+                      }`}></div>
+                    )}
 
-                  <div className="flex items-start gap-4">
-                    {/* Main Content */}
-                    <div className="flex-1 min-w-0">
-                      {/* Header Row */}
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-lg">
-                          <Layers className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{messageService}</span>
-                        </div>
-                        
-                        {getSeverityBadge(messageSeverity)}
-                        
-                        {majorChange && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-700 dark:text-orange-400 rounded-lg text-xs font-bold shadow-sm">
-                            <AlertCircle className="h-3.5 w-3.5" />
-                            Major Change
-                          </span>
-                        )}
-                        
-                        {actionReq && (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 text-red-700 dark:text-red-400 rounded-lg text-xs font-bold shadow-sm">
-                            <AlertTriangle className="h-3.5 w-3.5" />
-                            Action Required
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">
-                        {messageTitle}
-                      </h3>
-
-                      {/* Summary */}
-                      <p className="text-base text-gray-600 dark:text-gray-400 line-clamp-2 mb-4 leading-relaxed">
-                        {messageSummary}
-                      </p>
-
-                      {/* Footer */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-2">
-                            <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                              <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                            </div>
-                            <div className="text-sm">
-                              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Published</p>
-                              <p className="text-gray-700 dark:text-gray-300 font-semibold">
-                                {messagePublishedDate && new Date(messagePublishedDate).toLocaleDateString('en-US', { 
-                                  month: 'short', 
-                                  day: 'numeric', 
-                                  year: 'numeric' 
-                                })}
-                              </p>
-                            </div>
+                    <div className="flex items-start gap-4">
+                      {/* Main Content */}
+                      <div className="flex-1 min-w-0">
+                        {/* Header Row */}
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-lg">
+                            <Layers className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{messageService}</span>
                           </div>
                           
-                          {messageTags.length > 0 && (
-                            <div className="flex items-center gap-2">
-                              <Tag className="h-4 w-4 text-gray-400" />
-                              <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                                {messageTags.length} tags
-                              </span>
-                            </div>
+                          {getSeverityBadge(messageSeverity)}
+                          
+                          {majorChange && (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-700 dark:text-orange-400 rounded-lg text-xs font-bold shadow-sm">
+                              <AlertCircle className="h-3.5 w-3.5" />
+                              Major Change
+                            </span>
+                          )}
+                          
+                          {actionReq && (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 text-red-700 dark:text-red-400 rounded-lg text-xs font-bold shadow-sm">
+                              <AlertTriangle className="h-3.5 w-3.5" />
+                              Action Required
+                            </span>
                           )}
                         </div>
-                        
-                        <ExternalLink className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+
+                        {/* Message ID */}
+                        <div className="mb-3">
+                          <span className="text-xs font-mono text-gray-500 dark:text-gray-400">
+                            ID: {messageId}
+                          </span>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">
+                          {messageTitle}
+                        </h3>
+
+                        {/* Summary */}
+                        <p className="text-base text-gray-600 dark:text-gray-400 line-clamp-2 mb-4 leading-relaxed">
+                          {messageSummary}
+                        </p>
+
+                        {/* Footer */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2">
+                              <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                                <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                              </div>
+                              <div className="text-sm">
+                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Published</p>
+                                <p className="text-gray-700 dark:text-gray-300 font-semibold">
+                                  {messagePublishedDate && new Date(messagePublishedDate).toLocaleDateString('en-US', { 
+                                    month: 'short', 
+                                    day: 'numeric', 
+                                    year: 'numeric' 
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            {messageTags.length > 0 && (
+                              <div className="flex items-center gap-2">
+                                <Tag className="h-4 w-4 text-gray-400" />
+                                <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                  {messageTags.length} tags
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <ExternalLink className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            );
-          })}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

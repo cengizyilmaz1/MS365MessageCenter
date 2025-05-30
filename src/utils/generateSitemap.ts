@@ -13,23 +13,33 @@ export const generateSitemap = (messages: Message[]): string => {
   
   const staticPages: SitemapUrl[] = [
     { loc: '/', changefreq: 'daily', priority: '1.0' },
-    { loc: '/about', changefreq: 'monthly', priority: '0.8' }
+    { loc: '/about', changefreq: 'monthly', priority: '0.8' },
+    { loc: '/privacy', changefreq: 'monthly', priority: '0.5' },
+    { loc: '/terms', changefreq: 'monthly', priority: '0.5' }
   ];
   
   // Generate dynamic URLs for each message
-  const messageUrls: SitemapUrl[] = messages.map(message => {
-    const title = message.title || message.Title || '';
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const lastmod = message.lastModifiedDate || message.LastModifiedDateTime || 
-                    message.publishedDate || message.StartDateTime || currentDate;
-    
-    return {
-      loc: `/message/${slug}`,
-      lastmod: new Date(lastmod).toISOString(),
-      changefreq: 'weekly',
-      priority: '0.7'
-    };
-  });
+  const messageUrls: SitemapUrl[] = messages
+    .filter(message => {
+      const title = message.title || message.Title;
+      return title && typeof title === 'string' && title.trim().length > 0;
+    })
+    .map(message => {
+      const title = message.title || message.Title;
+      const slug = title.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+      
+      const lastmod = message.lastModifiedDate || message.LastModifiedDateTime || 
+                      message.publishedDate || message.StartDateTime || currentDate;
+      
+      return {
+        loc: `/message/${slug}`,
+        lastmod: new Date(lastmod).toISOString(),
+        changefreq: 'weekly',
+        priority: '0.7'
+      };
+    });
   
   const allUrls = [...staticPages, ...messageUrls];
   

@@ -19,7 +19,19 @@ export enum MessageSeverity {
 export enum MessageCategory {
   PLANNED_MAINTENANCE = 'Planned Maintenance',
   SERVICE_INCIDENT = 'Service Incident',
-  ANNOUNCEMENT = 'Announcement'
+  ANNOUNCEMENT = 'Announcement',
+  FEATURE_UPDATE = 'Feature Update',
+  SECURITY_ADVISORY = 'Security Advisory',
+  SERVICE_DEGRADATION = 'Service Degradation',
+  SERVICE_RESTORED = 'Service Restored',
+  SERVICE_INTERRUPTION = 'Service Interruption',
+  SERVICE_ISSUE = 'Service Issue',
+  SERVICE_UPDATE = 'Service Update',
+  SERVICE_CHANGE = 'Service Change',
+  SERVICE_NOTIFICATION = 'Service Notification',
+  SERVICE_ALERT = 'Service Alert',
+  SERVICE_WARNING = 'Service Warning',
+  SERVICE_INFO = 'Service Info'
 }
 
 export interface MessageFilter {
