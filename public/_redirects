@@ -7,8 +7,9 @@
 /robots.txt    /robots.txt    200
 /manifest.json    /manifest.json    200
 
-# Message routes
+# Message routes - handle both with and without trailing slash
 /message/*    /index.html    200
+/message/*/    /index.html    200
 
 # All other routes
 /*    /index.html    200 

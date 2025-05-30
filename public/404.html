@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script>
+      // Get the current path
+      const path = window.location.pathname;
+      
+      // If we're on a message page, redirect to the main app
+      if (path.startsWith('/message/')) {
+        // Store the path in sessionStorage
+        sessionStorage.setItem('redirectPath', path);
+        // Redirect to the main app
+        window.location.href = '/';
+      } else {
+        // For other 404s, just redirect to home
+        window.location.href = '/';
+      }
+    </script>
+  </head>
+  <body>
+    <p>Redirecting...</p>
+  </body>
+</html> 
