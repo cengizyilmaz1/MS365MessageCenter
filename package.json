@@ -6,14 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && node scripts/generate-static-pages.js",
-    "lint": "eslint .",
     "preview": "vite preview",
+    "serve": "node server.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "copy-blog-posts": "node scripts/copy-blog-posts.js"
   },
   "dependencies": {
     "date-fns": "^3.3.1",
+    "express": "^5.1.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

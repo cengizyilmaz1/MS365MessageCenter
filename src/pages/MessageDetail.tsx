@@ -263,19 +263,43 @@ const MessageDetail: React.FC = () => {
 
   // Process content to make links open in new tab and highlight headings
   const processContent = (content: string) => {
+    // First, wrap the content in a div with proper dark mode text color
+    let processedContent = `<div class="text-gray-900 dark:text-gray-100">`;
+    
     // Make links open in new tab
-    content = content.replace(
+    processedContent += content.replace(
       /<a\s+href=/gi,
       '<a target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline" href='
     );
     
     // Highlight specific headings like [When this will happen:]
-    content = content.replace(
+    processedContent = processedContent.replace(
       /\[([^\]]+):\]/g,
-      '<strong class="block text-lg font-black text-gray-900 dark:text-white mt-6 mb-3">$1:</strong>'
+      '</div><strong class="block text-lg font-black text-gray-900 dark:text-white mt-6 mb-3">$1:</strong><div class="text-gray-900 dark:text-gray-100">'
     );
     
-    return content;
+    // Fix any text color issues in paragraphs
+    processedContent = processedContent.replace(
+      /<p>/gi,
+      '<p class="text-gray-700 dark:text-gray-300">'
+    );
+    
+    // Fix list items
+    processedContent = processedContent.replace(
+      /<li>/gi,
+      '<li class="text-gray-700 dark:text-gray-300">'
+    );
+    
+    // Fix any spans or divs that might have color issues
+    processedContent = processedContent.replace(
+      /<span/gi,
+      '<span class="text-gray-700 dark:text-gray-300"'
+    );
+    
+    // Close the wrapper div
+    processedContent += '</div>';
+    
+    return processedContent;
   };
 
   // Extract all dates from message
@@ -462,7 +486,7 @@ const MessageDetail: React.FC = () => {
               
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  {getSeverityBadge(message.severity || mapSeverity(message.Severity))}
+                  {getSeverityBadge(message.severity || mapSeverity(message.Severity || 'normal'))}
                 </div>
                 
                 {/* Copy Link and Share Buttons */}
