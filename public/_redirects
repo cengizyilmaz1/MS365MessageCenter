@@ -1,5 +1,14 @@
-# Handle all routes for SPA
-/*    /index.html   200
+# API and data files should not be redirected
+/messages.json    /messages.json    200
+/@data/*    /@data/:splat    200
+/data/*    /data/:splat    200
+/assets/*    /assets/:splat    200
+/sitemap.xml    /sitemap.xml    200
+/robots.txt    /robots.txt    200
+/manifest.json    /manifest.json    200
 
-# Specific handling for message routes
-/message/*    /index.html   200 
+# Message routes
+/message/*    /index.html    200
+
+# All other routes
+/*    /index.html    200 

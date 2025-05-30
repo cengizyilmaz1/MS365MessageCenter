@@ -12,11 +12,29 @@ const PORT = process.env.PORT || 3000;
 // Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Handle all routes by serving index.html
+// Handle API routes first
+app.get('/messages.json', (req, res) => {
+  const messagesPath = path.join(__dirname, 'dist', 'messages.json');
+  if (fs.existsSync(messagesPath)) {
+    res.sendFile(messagesPath);
+  } else {
+    res.status(404).send('Messages file not found');
+  }
+});
+
+// Handle message detail routes
+app.get('/message/:id', (req, res) => {
+  const indexPath = path.join(__dirname, 'dist', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send('Build files not found. Please run npm run build first.');
+  }
+});
+
+// Handle all other routes by serving index.html
 app.get('*', (req, res) => {
   const indexPath = path.join(__dirname, 'dist', 'index.html');
-  
-  // Check if the file exists
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
