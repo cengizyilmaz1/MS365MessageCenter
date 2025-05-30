@@ -59,7 +59,7 @@ async function generateStaticPages() {
   
   const distPath = path.join(__dirname, '..', 'dist');
   const publicPath = path.join(__dirname, '..', 'public');
-  const dataPath = path.join(__dirname, '..', 'data');
+  const dataPath = path.join(__dirname, '..', 'public', 'data');
   const atDataPath = path.join(__dirname, '..', '@data');
   
   try {
@@ -93,7 +93,7 @@ async function generateStaticPages() {
     // 4. Copy blog posts CSV
     log.info('Copying blog posts data...');
     try {
-      const blogPostFile = 'CengizYILMAZBlogPost_20250528.csv';
+      const blogPostFile = 'CengizYILMAZBlogPost_latest.csv';
       const blogSrcPath = path.join(dataPath, blogPostFile);
       const blogDestPath = path.join(distDataPath, blogPostFile);
       await fs.copyFile(blogSrcPath, blogDestPath);
@@ -108,21 +108,26 @@ async function generateStaticPages() {
     await copyDirectory(atDataPath, atDataDestPath);
     log.success('Message data copied');
     
-    // 6. Generate dynamic sitemap
+    // 6. Generate static HTML pages for messages
+    log.info('Generating static message pages...');
+    await generateMessagePages(distPath, atDataPath);
+    log.success('Static message pages generated');
+    
+    // 7. Generate dynamic sitemap
     log.info('Generating dynamic sitemap...');
     await generateSitemap(distPath, atDataPath);
     log.success('Sitemap generated');
     
-    // 7. Generate service worker for PWA
+    // 8. Generate service worker for PWA
     log.info('Generating service worker...');
     await generateServiceWorker(distPath);
     log.success('Service worker generated');
     
-    // 8. Create .nojekyll file for GitHub Pages
+    // 9. Create .nojekyll file for GitHub Pages
     await fs.writeFile(path.join(distPath, '.nojekyll'), '');
     log.success('Created .nojekyll file');
     
-    // 9. Generate build info
+    // 10. Generate build info
     const buildInfo = {
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '0.1.0',
@@ -236,7 +241,7 @@ const urlsToCache = [
   '/manifest.json',
   '/logo.svg',
   '/@data/messages.json',
-  '/data/CengizYILMAZBlogPost_20250528.csv'
+  '/data/CengizYILMAZBlogPost_latest.csv'
 ];
 
 self.addEventListener('install', event => {
@@ -274,6 +279,146 @@ self.addEventListener('activate', event => {
 });`;
 
   await fs.writeFile(path.join(distPath, 'sw.js'), swContent);
+}
+
+async function generateMessagePages(distPath, dataPath) {
+  const messagesPath = path.join(dataPath, 'messages.json');
+  const messagesData = await fs.readFile(messagesPath, 'utf-8');
+  const messages = JSON.parse(messagesData);
+  
+  // Read the main index.html as template
+  const indexPath = path.join(distPath, 'index.html');
+  const indexHtml = await fs.readFile(indexPath, 'utf-8');
+  
+  // Create message directory
+  const messageDir = path.join(distPath, 'message');
+  await ensureDirectoryExists(messageDir);
+  
+  let generatedCount = 0;
+  
+  for (const message of messages) {
+    const title = message.title || message.Title;
+    if (!title) continue;
+    
+    // Generate stable slug from title
+    const slug = title.toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    // Create message-specific HTML with proper meta tags
+    const messageHtml = generateMessageHtml(indexHtml, message, slug);
+    
+    // Write the HTML file
+    const messagePath = path.join(messageDir, slug);
+    await ensureDirectoryExists(messagePath);
+    await fs.writeFile(path.join(messagePath, 'index.html'), messageHtml);
+    
+    generatedCount++;
+  }
+  
+  log.info(`Generated ${generatedCount} static message pages`);
+}
+
+function generateMessageHtml(template, message, slug) {
+  const title = message.title || message.Title || 'Microsoft 365 Update';
+  const pageTitle = `${title} | Microsoft 365 Message Center`;
+  
+  // Extract description
+  let description = '';
+  if (message.summary) {
+    description = message.summary;
+  } else if (message.content || message.Body?.Content) {
+    const text = (message.content || message.Body?.Content || '').replace(/<[^>]+>/g, '');
+    description = text.substring(0, 160).trim();
+  } else {
+    description = 'Microsoft 365 service update and announcement details.';
+  }
+  
+  // Extract keywords
+  const tags = message.tags || message.Tags || [];
+  const keywords = [
+    ...tags,
+    'Microsoft 365',
+    'Message Center',
+    message.category || message.Category || 'Update',
+    message.service || message.Services?.[0] || 'Microsoft 365'
+  ].filter(Boolean).join(', ');
+  
+  // Published and modified dates
+  const publishedDate = message.publishedDate || message.StartDateTime;
+  const modifiedDate = message.lastModifiedDate || message.LastModifiedDateTime || publishedDate;
+  
+  // Generate structured data
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    'headline': title,
+    'description': description,
+    'datePublished': publishedDate ? new Date(publishedDate).toISOString() : undefined,
+    'dateModified': modifiedDate ? new Date(modifiedDate).toISOString() : undefined,
+    'author': {
+      '@type': 'Organization',
+      'name': 'Microsoft 365',
+      'url': 'https://www.microsoft.com'
+    },
+    'publisher': {
+      '@type': 'Organization',
+      'name': 'Microsoft 365 Message Center',
+      'logo': {
+        '@type': 'ImageObject',
+        'url': 'https://message.cengizyilmaz.net/logo.png'
+      }
+    },
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': `https://message.cengizyilmaz.net/message/${slug}`
+    },
+    'keywords': keywords,
+    'articleSection': message.category || message.Category || 'Service Update'
+  };
+  
+  // Replace meta tags in template
+  let html = template;
+  
+  // Update title
+  html = html.replace(/<title>.*?<\/title>/, `<title>${pageTitle}</title>`);
+  
+  // Add meta tags in head (before </head>)
+  const metaTags = `
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="${pageTitle}">
+    <meta name="description" content="${description}">
+    <meta name="keywords" content="${keywords}">
+    <meta name="author" content="Microsoft 365">
+    <meta name="publisher" content="Microsoft 365 Message Center">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://message.cengizyilmaz.net/message/${slug}">
+    <meta property="og:title" content="${pageTitle}">
+    <meta property="og:description" content="${description}">
+    <meta property="og:image" content="https://message.cengizyilmaz.net/og-image.png">
+    <meta property="og:site_name" content="Microsoft 365 Message Center">
+    ${publishedDate ? `<meta property="article:published_time" content="${new Date(publishedDate).toISOString()}">` : ''}
+    ${modifiedDate ? `<meta property="article:modified_time" content="${new Date(modifiedDate).toISOString()}">` : ''}
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://message.cengizyilmaz.net/message/${slug}">
+    <meta property="twitter:title" content="${pageTitle}">
+    <meta property="twitter:description" content="${description}">
+    <meta property="twitter:image" content="https://message.cengizyilmaz.net/og-image.png">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://message.cengizyilmaz.net/message/${slug}" />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">${JSON.stringify(structuredData)}</script>
+  `;
+  
+  html = html.replace('</head>', `${metaTags}\n</head>`);
+  
+  return html;
 }
 
 // Run the script

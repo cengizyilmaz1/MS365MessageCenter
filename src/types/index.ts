@@ -26,7 +26,10 @@ export interface MessageBody {
 export interface Message {
   Id: string;
   Title: string;
-  Body: MessageBody;
+  Body: {
+    Content: string;
+    ContentType: string;
+  };
   Category: string;
   Severity: string;
   StartDateTime: string;
@@ -35,29 +38,30 @@ export interface Message {
   Services: string[];
   Tags: string[];
   IsMajorChange: boolean;
-  ActionRequiredByDateTime: string | null;
-  Details?: MessageDetail[];
+  ActionRequiredByDateTime?: string;
+  Details?: any[];
   HasAttachments: boolean;
-  ViewPoint?: {
-    IsArchived: boolean | null;
-    IsFavorited: boolean | null;
-    IsRead: boolean | null;
-  };
-  AdditionalProperties?: Record<string, any>;
-
+  ViewPoint?: any;
+  AdditionalProperties?: any;
+  
+  // URL tracking fields
+  originalId?: string;         // Original ID to track changes
+  originalTitle?: string;      // Original title for stable URLs
+  urlSlug?: string;           // Stable URL slug
+  
   // Legacy fields for compatibility
-  id?: string;
-  title?: string;
-  summary?: string;
-  content?: string;
-  category?: MessageCategory;
-  severity?: MessageSeverity;
-  publishedDate?: string;
+  id: string;
+  title: string;
+  summary: string;
+  content: string;
+  category: MessageCategory;
+  severity: MessageSeverity;
+  publishedDate: string;
   lastModifiedDate?: string;
-  service?: string;
-  tags?: string[];
+  service: string;
+  tags: string[];
   affectedWorkloads?: string[];
-  isRead?: boolean;
+  isRead: boolean;
 }
 
 export interface MessageFilter {
