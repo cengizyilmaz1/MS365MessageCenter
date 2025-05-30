@@ -2,7 +2,7 @@ import { Message } from '../types';
 
 interface SitemapUrl {
   loc: string;
-  lastmod?: string;
+  lastmod: string;
   changefreq: string;
   priority: string;
 }
@@ -12,14 +12,14 @@ export const generateSitemap = (messages: Message[]): string => {
   const currentDate = new Date().toISOString();
   
   const staticPages: SitemapUrl[] = [
-    { loc: '/', changefreq: 'daily', priority: '1.0' },
-    { loc: '/about', changefreq: 'monthly', priority: '0.8' },
-    { loc: '/privacy', changefreq: 'monthly', priority: '0.5' },
-    { loc: '/terms', changefreq: 'monthly', priority: '0.5' }
+    { loc: '/', lastmod: currentDate, changefreq: 'daily', priority: '1.0' },
+    { loc: '/about', lastmod: currentDate, changefreq: 'monthly', priority: '0.8' },
+    { loc: '/privacy', lastmod: currentDate, changefreq: 'monthly', priority: '0.5' },
+    { loc: '/terms', lastmod: currentDate, changefreq: 'monthly', priority: '0.5' }
   ];
   
   // Generate dynamic URLs for each message
-  const messageUrls: SitemapUrl[] = messages
+  const messageUrls = messages
     .filter(message => {
       const title = message.title || message.Title;
       return title && typeof title === 'string' && title.trim().length > 0;
@@ -50,7 +50,7 @@ export const generateSitemap = (messages: Message[]): string => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allUrls.map(url => `  <url>
     <loc>${baseUrl}${url.loc}</loc>
-    ${url.lastmod ? `<lastmod>${url.lastmod}</lastmod>` : `<lastmod>${currentDate}</lastmod>`}
+    <lastmod>${url.lastmod}</lastmod>
     <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority}</priority>
   </url>`).join('\n')}

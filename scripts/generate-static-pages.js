@@ -1,101 +1,249 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const messagesPath = path.join(__dirname, '../@data/messages.json');
-const distPath = path.join(__dirname, '../dist');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Read messages
-const messages = JSON.parse(fs.readFileSync(messagesPath, 'utf8'));
-
-// Create message directory if it doesn't exist
-const messageDir = path.join(distPath, 'message');
-if (!fs.existsSync(messageDir)) {
-  fs.mkdirSync(messageDir, { recursive: true });
-}
-
-console.log('Generating static pages...');
-let count = 0;
-const total = messages.length;
-
-// Generate static HTML for each message
-messages.forEach(message => {
-  const messageId = message.id;
-  const messageHtml = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${message.title} - Microsoft 365 Message Center</title>
-  <meta name="description" content="${message.messageBody?.substring(0, 160)}">
-  <link rel="stylesheet" href="/assets/index.css">
-  <link rel="canonical" href="https://message.cengizyilmaz.net/message/${messageId}" />
-</head>
-<body>
-  <div id="root">
-    <div class="message-container">
-      <h1>${message.title}</h1>
-      <div class="message-content">
-        ${message.messageBody || ''}
-      </div>
-      <div class="message-meta">
-        <p>Last Modified: ${new Date(message.lastModifiedDateTime).toLocaleDateString()}</p>
-        <p>Category: ${message.category || 'N/A'}</p>
-      </div>
-    </div>
-  </div>
-  <script type="module" src="/assets/index.js"></script>
-  <script>
-    window.__INITIAL_MESSAGE__ = ${JSON.stringify(message)};
-    window.__INITIAL_STATE__ = {
-      messages: ${JSON.stringify(messages)},
-      currentMessage: ${JSON.stringify(message)}
-    };
-  </script>
-</body>
-</html>`;
-
-  fs.writeFileSync(path.join(messageDir, `${messageId}.html`), messageHtml);
-  
-  count++;
-  if (count % 50 === 0) {
-    console.log(`Generated ${count}/${total} pages`);
-  }
-});
-
-// Helper function to safely format date
-const formatDate = (dateStr) => {
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) {
-      return new Date().toISOString(); // Return current date if invalid
-    }
-    return date.toISOString();
-  } catch (error) {
-    return new Date().toISOString(); // Return current date if error
-  }
+// Console colors
+const colors = {
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m'
 };
 
-// Generate sitemap
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+const log = {
+  info: (msg) => console.log(`${colors.blue}ℹ${colors.reset} ${msg}`),
+  success: (msg) => console.log(`${colors.green}✓${colors.reset} ${msg}`),
+  warning: (msg) => console.log(`${colors.yellow}⚠${colors.reset} ${msg}`),
+  error: (msg) => console.log(`${colors.bright}${colors.yellow}✗${colors.reset} ${msg}`),
+  section: (msg) => console.log(`\n${colors.magenta}▶${colors.reset} ${colors.bright}${msg}${colors.reset}`)
+};
+
+async function ensureDirectoryExists(dirPath) {
+  try {
+    await fs.access(dirPath);
+  } catch {
+    await fs.mkdir(dirPath, { recursive: true });
+    log.info(`Created directory: ${dirPath}`);
+  }
+}
+
+async function copyDirectory(src, dest) {
+  await ensureDirectoryExists(dest);
+  const entries = await fs.readdir(src, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+
+    if (entry.isDirectory()) {
+      await copyDirectory(srcPath, destPath);
+    } else {
+      await fs.copyFile(srcPath, destPath);
+    }
+  }
+}
+
+async function generateStaticPages() {
+  log.section('🚀 Starting static site generation...');
+  
+  const distPath = path.join(__dirname, '..', 'dist');
+  const publicPath = path.join(__dirname, '..', 'public');
+  const dataPath = path.join(__dirname, '..', 'data');
+  const atDataPath = path.join(__dirname, '..', '@data');
+  
+  try {
+    // 1. Ensure dist directory exists
+    log.info('Preparing dist directory...');
+    await ensureDirectoryExists(distPath);
+    
+    // 2. Copy public files
+    log.info('Copying public files...');
+    const publicFiles = await fs.readdir(publicPath);
+    for (const file of publicFiles) {
+      if (file !== 'index.html') {
+        const srcPath = path.join(publicPath, file);
+        const destPath = path.join(distPath, file);
+        const stat = await fs.stat(srcPath);
+        
+        if (stat.isDirectory()) {
+          await copyDirectory(srcPath, destPath);
+        } else {
+          await fs.copyFile(srcPath, destPath);
+        }
+      }
+    }
+    log.success('Public files copied');
+    
+    // 3. Create data directory in dist
+    log.info('Setting up data directory...');
+    const distDataPath = path.join(distPath, 'data');
+    await ensureDirectoryExists(distDataPath);
+    
+    // 4. Copy blog posts CSV
+    log.info('Copying blog posts data...');
+    try {
+      const blogPostFile = 'CengizYILMAZBlogPost_20250528.csv';
+      const blogSrcPath = path.join(dataPath, blogPostFile);
+      const blogDestPath = path.join(distDataPath, blogPostFile);
+      await fs.copyFile(blogSrcPath, blogDestPath);
+      log.success('Blog posts data copied');
+    } catch (error) {
+      log.warning('Blog posts file not found, skipping...');
+    }
+    
+    // 5. Copy @data contents
+    log.info('Copying message data...');
+    const atDataDestPath = path.join(distPath, '@data');
+    await copyDirectory(atDataPath, atDataDestPath);
+    log.success('Message data copied');
+    
+    // 6. Generate dynamic sitemap
+    log.info('Generating dynamic sitemap...');
+    await generateSitemap(distPath, atDataPath);
+    log.success('Sitemap generated');
+    
+    // 7. Generate service worker for PWA
+    log.info('Generating service worker...');
+    await generateServiceWorker(distPath);
+    log.success('Service worker generated');
+    
+    // 8. Create .nojekyll file for GitHub Pages
+    await fs.writeFile(path.join(distPath, '.nojekyll'), '');
+    log.success('Created .nojekyll file');
+    
+    // 9. Generate build info
+    const buildInfo = {
+      timestamp: new Date().toISOString(),
+      version: process.env.npm_package_version || '0.1.0',
+      commit: process.env.GITHUB_SHA || 'local',
+      environment: process.env.NODE_ENV || 'production'
+    };
+    await fs.writeFile(
+      path.join(distPath, 'build-info.json'),
+      JSON.stringify(buildInfo, null, 2)
+    );
+    log.success('Build info generated');
+    
+    log.section('✨ Static site generation completed successfully!');
+    
+  } catch (error) {
+    log.error(`Error during static generation: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+async function generateSitemap(distPath, dataPath) {
+  const messagesPath = path.join(dataPath, 'messages.json');
+  const messagesData = await fs.readFile(messagesPath, 'utf-8');
+  const messages = JSON.parse(messagesData);
+  
+  const baseUrl = 'https://message.cengizyilmaz.net';
+  const currentDate = new Date().toISOString();
+  
+  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">`;
+  
+  // Static pages
+  const staticPages = [
+    { loc: '/', priority: '1.0', changefreq: 'daily' },
+    { loc: '/about', priority: '0.8', changefreq: 'monthly' },
+    { loc: '/privacy', priority: '0.5', changefreq: 'yearly' },
+    { loc: '/terms', priority: '0.5', changefreq: 'yearly' }
+  ];
+  
+  for (const page of staticPages) {
+    sitemap += `
   <url>
-    <loc>https://message.cengizyilmaz.net/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  ${messages.map(message => `
+    <loc>${baseUrl}${page.loc}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`;
+  }
+  
+  // Dynamic message pages
+  for (const message of messages) {
+    const title = message.title || message.Title;
+    if (!title) continue;
+    
+    const slug = title.toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    const lastmod = message.lastModifiedDate || message.LastModifiedDateTime || 
+                    message.publishedDate || message.StartDateTime || currentDate;
+    
+    sitemap += `
   <url>
-    <loc>https://message.cengizyilmaz.net/message/${message.id}</loc>
-    <lastmod>${formatDate(message.lastModifiedDateTime)}</lastmod>
+    <loc>${baseUrl}/message/${slug}</loc>
+    <lastmod>${new Date(lastmod).toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`).join('')}
-</urlset>`;
+    <priority>0.7</priority>
+  </url>`;
+  }
+  
+  sitemap += '\n</urlset>';
+  
+  await fs.writeFile(path.join(distPath, 'sitemap.xml'), sitemap);
+}
 
-fs.writeFileSync(path.join(distPath, 'sitemap.xml'), sitemap);
+async function generateServiceWorker(distPath) {
+  const swContent = `// Service Worker for Microsoft 365 Message Center
+const CACHE_NAME = 'message-center-v${process.env.npm_package_version || '1.0.0'}';
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/logo.svg',
+  '/@data/messages.json',
+  '/data/CengizYILMAZBlogPost_20250528.csv'
+];
 
-console.log(`✓ Generated all ${total} static pages`);
-console.log('✓ Generated sitemap.xml'); 
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});
+
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});`;
+
+  await fs.writeFile(path.join(distPath, 'sw.js'), swContent);
+}
+
+// Run the script
+generateStaticPages().catch(console.error); 

@@ -9,28 +9,38 @@ import About from './pages/About';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import SEO from './components/SEO';
+import { useAnalytics } from './hooks/useAnalytics';
+
+// Analytics wrapper component
+function AppWithAnalytics() {
+  useAnalytics(); // This will track page views automatically
+  
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <Header />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/message/:title" element={<MessageDetail />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+}
 
 function App() {
   return (
     <HelmetProvider>
       <Router basename="/">
         <SEO />
-        <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-          <Header />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/message/:title" element={<MessageDetail />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <AppWithAnalytics />
       </Router>
     </HelmetProvider>
   );
 }
 
-export default App
+export default App;

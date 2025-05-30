@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MessageFilter } from '../types';
 import { Search, Filter, X, Calendar, Layers } from 'lucide-react';
+import { MessageCategory, MessageSeverity } from '../types';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 interface MessageFilterProps {
   filter: MessageFilter;
@@ -13,8 +15,29 @@ const MessageFilterComponent: React.FC<MessageFilterProps> = ({
   onFilterChange,
   availableServices,
 }) => {
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChange({ searchTerm: e.target.value });
+  const [isExpanded, setIsExpanded] = useState(false);
+  const { trackFilterUsage, trackSearch } = useAnalytics();
+
+  const handleFilterChange = (key: keyof MessageFilter, value: any) => {
+    onFilterChange({ ...filter, [key]: value });
+    
+    // Track filter usage
+    if (value && value !== 'all') {
+      trackFilterUsage(key, value.toString());
+    }
+  };
+
+  const handleSearchChange = (searchTerm: string) => {
+    onFilterChange({ ...filter, searchTerm });
+    
+    // Track search after user stops typing for 1 second
+    if (searchTerm.length > 2) {
+      const timeoutId = setTimeout(() => {
+        trackSearch(searchTerm, 0); // Results count will be tracked elsewhere
+      }, 1000);
+      
+      return () => clearTimeout(timeoutId);
+    }
   };
 
   const handleServiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -50,7 +73,7 @@ const MessageFilterComponent: React.FC<MessageFilterProps> = ({
               type="text"
               placeholder="Search by title, summary, or tags..."
               value={filter.searchTerm}
-              onChange={handleSearchChange}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300"
             />
             {filter.searchTerm && (

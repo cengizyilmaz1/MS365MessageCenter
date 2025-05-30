@@ -33,12 +33,13 @@ const Privacy: React.FC = () => {
                 Information We Collect
               </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                This application does not collect any personal information. All message data is fetched directly from Microsoft's public APIs and displayed in your browser.
+                The Microsoft 365 Message Center Viewer collects minimal information to provide and improve our service:
               </p>
-              <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-2">
-                <li>No user authentication data is stored</li>
-                <li>No cookies are used for tracking</li>
-                <li>No personal information is collected or transmitted</li>
+              <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                <li>Viewing preferences (such as filters and sorting options)</li>
+                <li>Messages marked as read (stored locally in your browser)</li>
+                <li>Theme preference (light/dark mode)</li>
+                <li>Analytics data to improve user experience (via Google Analytics)</li>
               </ul>
             </section>
 
@@ -84,6 +85,23 @@ const Privacy: React.FC = () => {
                 <a href="mailto:info@cengizyilmaz.net" className="text-blue-600 dark:text-blue-400 hover:underline">
                   info@cengizyilmaz.net
                 </a>
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Analytics and Cookies</h2>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
+                We use Google Analytics to understand how visitors interact with our website. This helps us improve the user experience and fix issues. Google Analytics collects:
+              </p>
+              <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 mb-4">
+                <li>Pages visited and time spent on each page</li>
+                <li>Browser type and operating system</li>
+                <li>General geographic location (country/city level)</li>
+                <li>How you arrived at our site</li>
+                <li>Interactions with site features (filters, search, etc.)</li>
+              </ul>
+              <p className="text-gray-700 dark:text-gray-300">
+                This data is anonymized and aggregated. We do not collect personally identifiable information. You can opt-out of Google Analytics by using the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Google Analytics Opt-out Browser Add-on</a>.
               </p>
             </section>
           </div>

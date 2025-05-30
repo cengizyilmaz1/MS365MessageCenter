@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMessages } from '../hooks/useMessages';
-import { Loader, AlertTriangle, Search, Bell, Calendar, Tag, ChevronDown, ChevronUp, ExternalLink, Layers, Clock, AlertCircle, CheckCircle } from 'lucide-react';
+import { Loader, AlertTriangle, Search, Bell, Calendar, Tag, ChevronDown, ChevronUp, ExternalLink, Layers, Clock, AlertCircle, CheckCircle, MessageSquare, TrendingUp, ArrowRight, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { MessageSeverity, MessageCategory } from '../types';
 import { Link } from 'react-router-dom';
 import MessageFilter from '../components/MessageFilter';
@@ -152,197 +152,235 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <SEO 
-        title="Microsoft 365 Message Center"
-        description="Stay updated with all Microsoft 365 service announcements, planned maintenance, and feature updates. Get real-time notifications about service changes, incidents, and improvements."
-        keywords={[
-          'Microsoft 365',
-          'Office 365',
-          'Service Updates',
-          'Maintenance',
-          'Feature Updates',
-          'Service Status',
-          'Microsoft Updates',
-          ...availableServices
-        ]}
+        title="Dashboard"
+        description="Microsoft 365 Message Center dashboard showing all service updates, announcements, and changes"
+        keywords={['Microsoft 365', 'Message Center', 'Dashboard', 'Service Updates']}
       />
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Message Center</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Stay updated with all Microsoft 365 service announcements and changes
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
-            <div className="relative z-10">
-              <p className="text-blue-100 text-sm font-medium">Total Messages</p>
-              <h3 className="text-3xl font-bold mt-2">{messages.length}</h3>
-            </div>
-            <Bell className="absolute -right-4 -bottom-4 h-24 w-24 text-blue-400 opacity-20" />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          {/* Header Section */}
+          <div className="mb-8 animate-fade-in">
+            <h1 className="text-4xl font-bold text-primary mb-4">
+              Microsoft 365 Message Center
+            </h1>
+            <p className="text-lg text-secondary">
+              Stay updated with all service announcements and changes
+            </p>
           </div>
 
-          <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
-            <div className="relative z-10">
-              <p className="text-orange-100 text-sm font-medium">Major Changes</p>
-              <h3 className="text-3xl font-bold mt-2">{majorChanges.length}</h3>
-              <p className="text-orange-100 text-xs mt-2">{actionRequired.length} action required</p>
+          {/* Stats Section */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-tertiary">Total Messages</p>
+                  <p className="text-2xl font-bold text-primary">{messages.length.toLocaleString()}</p>
+                </div>
+                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <MessageSquare className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+              </div>
             </div>
-            <AlertCircle className="absolute -right-4 -bottom-4 h-24 w-24 text-orange-400 opacity-20" />
+
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.1s'}}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-tertiary">This Week</p>
+                  <p className="text-2xl font-bold text-primary">{messagesThisWeek.toLocaleString()}</p>
+                </div>
+                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.2s'}}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-tertiary">High Priority</p>
+                  <p className="text-2xl font-bold text-primary">{highPriorityCount.toLocaleString()}</p>
+                </div>
+                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                  <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.3s'}}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-tertiary">Action Required</p>
+                  <p className="text-2xl font-bold text-primary">{actionRequiredCount.toLocaleString()}</p>
+                </div>
+                <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                  <AlertCircle className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
-            <div className="relative z-10">
-              <p className="text-purple-100 text-sm font-medium">Last Update</p>
-              <h3 className="text-2xl font-bold mt-2">
-                {lastUpdateDate ? new Date(lastUpdateDate).toLocaleDateString() : 'N/A'}
-              </h3>
-              <p className="text-purple-100 text-xs mt-2">
-                {lastUpdateDate ? new Date(lastUpdateDate).toLocaleTimeString() : ''}
-              </p>
-            </div>
-            <Clock className="absolute -right-4 -bottom-4 h-24 w-24 text-purple-400 opacity-20" />
-          </div>
-        </div>
-
-        {/* Filters */}
-        <div className="mb-6">
-          <MessageFilter filter={filter} onFilterChange={updateFilter} availableServices={availableServices} />
-        </div>
-
-        {/* Messages Table */}
-        <div className="space-y-4">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Messages</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {messages.length} total • {majorChanges.length} major changes • {actionRequired.length} action required
-              </p>
-            </div>
+          {/* Filter and Search Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 animate-scale-in">
+            <MessageFilter />
           </div>
 
-          {/* Message Cards */}
-          <div className="space-y-4">
-            {sortMessages.map((message) => {
-              const majorChange = isMajorChange(message);
-              const actionReq = isActionRequired(message);
-              const messageId = message.id || message.Id;
-              const messageTitle = message.title || message.Title;
-              const messageService = message.service || message.Services?.[0] || 'Microsoft 365';
-              const messageSummary = message.summary || '';
-              const messageSeverity = message.severity || MessageSeverity.INFORMATIONAL;
-              const messagePublishedDate = message.publishedDate || message.StartDateTime || '';
-              const messageTags = message.tags || message.Tags || [];
-              
+          {/* Messages Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {sortMessages.map((message, index) => {
+              const messageTitle = message.title || message.Title || 'Untitled Message';
+              const messageId = message.id || message.Id || `msg-${index}`;
+              const isRead = unreadMessages.has(messageId);
+
               return (
-                <Link
+                <div
                   key={messageId}
-                  to={getMessageUrl(messageTitle) || '/'}
-                  onClick={() => markAsRead(messageId)}
-                  className="block"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover animate-fade-in"
+                  style={{animationDelay: `${index * 0.05}s`}}
                 >
-                  <div
-                    className={`
-                      relative bg-white dark:bg-gray-800 rounded-2xl transition-all duration-300 p-6
-                      hover:shadow-xl hover:scale-[1.02] cursor-pointer
-                      shadow-md border border-gray-100 dark:border-gray-700
-                      ${majorChange || actionReq ? 'ring-2 ring-offset-2 dark:ring-offset-gray-900' : ''}
-                      ${majorChange && actionReq ? 'ring-red-400' : majorChange ? 'ring-orange-400' : actionReq ? 'ring-red-400' : ''}
-                    `}
-                  >
-                    {/* Priority Bar */}
-                    {(majorChange || actionReq) && (
-                      <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl ${
-                        majorChange && actionReq ? 'bg-gradient-to-b from-orange-500 to-red-500' :
-                        majorChange ? 'bg-orange-500' : 
-                        'bg-red-500'
-                      }`}></div>
-                    )}
+                  {/* Priority indicators */}
+                  {(isMajorChange(message) || isActionRequired(message)) && (
+                    <div className="flex gap-2 mb-4">
+                      {isMajorChange(message) && (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400">
+                          <AlertCircle className="h-3 w-3" />
+                          Major Change
+                        </span>
+                      )}
+                      {isActionRequired(message) && (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">
+                          <AlertTriangle className="h-3 w-3" />
+                          Action Required
+                        </span>
+                      )}
+                    </div>
+                  )}
 
-                    <div className="flex items-start gap-4">
-                      {/* Main Content */}
-                      <div className="flex-1 min-w-0">
-                        {/* Header Row */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-lg">
-                            <Layers className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{messageService}</span>
-                          </div>
-                          
-                          {getSeverityBadge(messageSeverity)}
-                          
-                          {majorChange && (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-700 dark:text-orange-400 rounded-lg text-xs font-bold shadow-sm">
-                              <AlertCircle className="h-3.5 w-3.5" />
-                              Major Change
-                            </span>
-                          )}
-                          
-                          {actionReq && (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30 text-red-700 dark:text-red-400 rounded-lg text-xs font-bold shadow-sm">
-                              <AlertTriangle className="h-3.5 w-3.5" />
-                              Action Required
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Message ID */}
-                        <div className="mb-3">
-                          <span className="text-xs font-mono text-gray-500 dark:text-gray-400">
-                            ID: {messageId}
-                          </span>
-                        </div>
-
-                        {/* Title */}
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">
-                          {messageTitle}
-                        </h3>
-
-                        {/* Summary */}
-                        <p className="text-base text-gray-600 dark:text-gray-400 line-clamp-2 mb-4 leading-relaxed">
-                          {messageSummary}
-                        </p>
-
-                        {/* Footer */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                              <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                                <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                              </div>
-                              <div className="text-sm">
-                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Published</p>
-                                <p className="text-gray-700 dark:text-gray-300 font-semibold">
-                                  {messagePublishedDate && new Date(messagePublishedDate).toLocaleDateString('en-US', { 
-                                    month: 'short', 
-                                    day: 'numeric', 
-                                    year: 'numeric' 
-                                  })}
-                                </p>
-                              </div>
-                            </div>
-                            
-                            {messageTags.length > 0 && (
-                              <div className="flex items-center gap-2">
-                                <Tag className="h-4 w-4 text-gray-400" />
-                                <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                                  {messageTags.length} tags
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                          
-                          <ExternalLink className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                        </div>
-                      </div>
+                  {/* Message Header */}
+                  <div className="mb-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-primary line-clamp-2 flex-1">
+                        {messageTitle}
+                      </h3>
+                      {!isRead && (
+                        <span className="ml-2 flex h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-400" />
+                      )}
+                    </div>
+                    
+                    {/* Message ID */}
+                    <div className="flex items-center gap-2 text-sm text-tertiary">
+                      <Hash className="h-4 w-4" />
+                      <span className="font-mono">{messageId}</span>
                     </div>
                   </div>
-                </Link>
+
+                  {/* Service and Severity */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                      <Layers className="h-3 w-3" />
+                      {message.service || message.Services?.[0] || 'Microsoft 365'}
+                    </span>
+                    {getSeverityBadge(message.severity || MessageSeverity.INFORMATIONAL)}
+                  </div>
+
+                  {/* Summary */}
+                  <p className="text-sm text-secondary line-clamp-3 mb-4">
+                    {message.summary || message.Summary || 'No summary available'}
+                  </p>
+
+                  {/* Published Date */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm text-tertiary">
+                      <Calendar className="h-4 w-4" />
+                      <span>
+                        {new Date(message.publishedDate || message.StartDateTime).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </span>
+                    </div>
+                    
+                    <Link
+                      to={getMessageUrl(messageTitle) || '/'}
+                      className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg transition-colors"
+                    >
+                      View Details
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
               );
             })}
+          </div>
+
+          {/* Empty State */}
+          {sortMessages.length === 0 && (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-12 text-center animate-fade-in">
+              <MessageSquare className="h-16 w-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-primary mb-2">No messages found</h3>
+              <p className="text-secondary">Try adjusting your filters or search criteria</p>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex items-center justify-center gap-2">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-shadow"
+              >
+                <ChevronLeft className="h-5 w-5 text-primary" />
+              </button>
+              
+              <div className="flex items-center gap-2">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`w-10 h-10 rounded-lg font-medium transition-all ${
+                        currentPage === pageNum
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : 'bg-white dark:bg-gray-800 text-primary shadow-md hover:shadow-lg'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-shadow"
+              >
+                <ChevronRight className="h-5 w-5 text-primary" />
+              </button>
+            </div>
+          )}
+
+          {/* Sitemap Download */}
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => downloadSitemap(messages)}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shadow-md"
+            >
+              <Download className="h-5 w-5" />
+              Download Sitemap
+            </button>
           </div>
         </div>
       </div>

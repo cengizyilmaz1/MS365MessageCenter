@@ -6,6 +6,7 @@ import { MessageSeverity } from '../types';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import StructuredData from '../components/StructuredData';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 // Map actual values to our enums
 const mapSeverity = (severity: string): MessageSeverity => {
@@ -48,6 +49,7 @@ const MessageDetail: React.FC = () => {
   const [copiedLink, setCopiedLink] = useState(false);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [selectedPosts, setSelectedPosts] = useState<BlogPost[]>([]);
+  const { trackMessageView, trackExternalLink } = useAnalytics();
 
   const message = messages.find(
     (msg) => (msg.title || msg.Title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === title
@@ -60,7 +62,14 @@ const MessageDetail: React.FC = () => {
         markAsRead(messageId);
       }
     }
-  }, [message, markAsRead]);
+    
+    // Track message view in analytics
+    if (message) {
+      const messageId = message.id || message.Id || '';
+      const messageTitle = message.title || message.Title || '';
+      trackMessageView(messageId.toString(), messageTitle);
+    }
+  }, [message, markAsRead, trackMessageView]);
 
   // Deterministic shuffle for each message
   function seededShuffle<T>(array: T[], seed: string): T[] {
