@@ -19,6 +19,7 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  functions = "functions"
 
 [build.environment]
   NODE_VERSION = "18"
@@ -30,8 +31,31 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://admin.microsoft.com https://www.microsoft.com; frame-ancestors 'none';"
-    
+    Content-Security-Policy = "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data: blob:; font-src 'self' https: data:;"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/news-sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain"
+    Cache-Control = "public, max-age=3600"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@azure/identity", "@azure/data-tables"]
+
 [[headers]]
   for = "/assets/*"
   [headers.values]

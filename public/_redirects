@@ -11,5 +11,15 @@
 /message/*    /index.html    200
 /message/*/    /index.html    200
 
-# All other routes
-/*    /index.html    200 
+# Redirect all routes to index.html for SPA
+/* /index.html 200
+
+# Redirect www to non-www
+https://www.message.cengizyilmaz.net/* https://message.cengizyilmaz.net/:splat 301!
+
+# Redirect HTTP to HTTPS
+http://message.cengizyilmaz.net/* https://message.cengizyilmaz.net/:splat 301!
+
+# Handle 404s
+/404 /404.html 404
+/* /404.html 404 

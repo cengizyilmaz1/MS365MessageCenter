@@ -182,34 +182,35 @@ async function generateSitemap(distPath, dataPath) {
   const baseUrl = 'https://message.cengizyilmaz.net';
   const currentDate = new Date().toISOString();
   
+  // Generate regular sitemap
   let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd
-        http://www.google.com/schemas/sitemap-news/0.9
-        http://www.google.com/schemas/sitemap-news/0.9/sitemap-news.xsd">`;
-  
-  // Static pages
-  const staticPages = [
-    { loc: '/', priority: '1.0', changefreq: 'daily' },
-    { loc: '/about', priority: '0.8', changefreq: 'monthly' },
-    { loc: '/privacy', priority: '0.5', changefreq: 'yearly' },
-    { loc: '/terms', priority: '0.5', changefreq: 'yearly' }
-  ];
-  
-  for (const page of staticPages) {
-    sitemap += `
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>${baseUrl}${page.loc}</loc>
+    <loc>${baseUrl}</loc>
     <lastmod>${currentDate}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/about</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/privacy</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/terms</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>`;
-  }
-  
-  // Dynamic message pages
+
+  // Add message pages
   for (const message of messages) {
     const title = message.title || message.Title;
     if (!title) continue;
@@ -221,15 +222,48 @@ async function generateSitemap(distPath, dataPath) {
     const lastmod = message.lastModifiedDate || message.LastModifiedDateTime || 
                     message.publishedDate || message.StartDateTime || currentDate;
     
-    const publishedDate = message.publishedDate || message.StartDateTime || lastmod;
-    const tags = (message.tags || message.Tags || []).join(', ');
-    
     sitemap += `
   <url>
     <loc>${baseUrl}/message/${slug}</loc>
     <lastmod>${new Date(lastmod).toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+  </url>`;
+  }
+  
+  sitemap += '\n</urlset>';
+  
+  // Generate news sitemap
+  let newsSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>${baseUrl}</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Microsoft 365 Message Center</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>${currentDate}</news:publication_date>
+      <news:title>Microsoft 365 Message Center - Latest Updates</news:title>
+    </news:news>
+  </url>`;
+
+  // Add message pages to news sitemap
+  for (const message of messages) {
+    const title = message.title || message.Title;
+    if (!title) continue;
+    
+    const slug = title.toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    const publishedDate = message.publishedDate || message.StartDateTime || currentDate;
+    const tags = (message.tags || message.Tags || []).join(', ');
+    
+    newsSitemap += `
+  <url>
+    <loc>${baseUrl}/message/${slug}</loc>
     <news:news>
       <news:publication>
         <news:name>Microsoft 365 Message Center</news:name>
@@ -242,9 +276,11 @@ async function generateSitemap(distPath, dataPath) {
   </url>`;
   }
   
-  sitemap += '\n</urlset>';
+  newsSitemap += '\n</urlset>';
   
+  // Write both sitemaps
   await fs.writeFile(path.join(distPath, 'sitemap.xml'), sitemap);
+  await fs.writeFile(path.join(distPath, 'news-sitemap.xml'), newsSitemap);
 }
 
 async function generateServiceWorker(distPath) {
@@ -389,18 +425,16 @@ function generateMessageHtml(template, message, slug) {
       '@id': `https://message.cengizyilmaz.net/message/${slug}`
     },
     'keywords': keywords,
-    'articleSection': message.category || message.Category || 'Service Update'
+    'articleSection': message.category || message.Category || 'Service Update',
+    'inLanguage': 'en-US',
+    'isAccessibleForFree': true,
+    'license': 'https://www.microsoft.com/en-us/legal/terms-of-use'
   };
-  
-  // Replace meta tags in template
-  let html = template;
-  
-  // Update title
-  html = html.replace(/<title>.*?<\/title>/, `<title>${pageTitle}</title>`);
-  
-  // Add meta tags in head (before </head>)
+
+  // Generate meta tags
   const metaTags = `
     <!-- Primary Meta Tags -->
+    <title>${pageTitle}</title>
     <meta name="title" content="${pageTitle}">
     <meta name="description" content="${description}">
     <meta name="keywords" content="${keywords}">
@@ -430,7 +464,12 @@ function generateMessageHtml(template, message, slug) {
     <!-- Structured Data -->
     <script type="application/ld+json">${JSON.stringify(structuredData)}</script>
   `;
+
+  // Replace meta tags in template
+  let html = template;
   
+  // Update title and meta tags
+  html = html.replace(/<title>.*?<\/title>/, `<title>${pageTitle}</title>`);
   html = html.replace('</head>', `${metaTags}\n</head>`);
   
   return html;

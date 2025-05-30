@@ -3,6 +3,35 @@ import { Award, User, Calendar, MapPin, Briefcase, Target, BookOpen, Globe, Awar
 import SEO from '../components/SEO';
 
 const About: React.FC = () => {
+  // Add schema.org data
+  const personSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Cengiz YILMAZ',
+    jobTitle: 'Microsoft MVP & Microsoft Certified Trainer',
+    url: 'https://message.cengizyilmaz.net',
+    sameAs: [
+      'https://linkedin.com/in/cengizyilmazz',
+      'https://cengizyilmaz.net'
+    ],
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Microsoft'
+    },
+    award: [
+      'Microsoft MVP (2020-2024)',
+      'Microsoft Certified Trainer (2018-2024)'
+    ],
+    knowsAbout: [
+      'Microsoft Exchange Server',
+      'Exchange Online',
+      'Microsoft 365',
+      'Active Directory',
+      'PowerShell'
+    ],
+    description: 'Microsoft MVP and Microsoft Certified Trainer with expertise in Microsoft 365, Exchange, and PowerShell'
+  };
+
   return (
     <>
       <SEO 
@@ -10,6 +39,9 @@ const About: React.FC = () => {
         description="Cengiz YILMAZ - Microsoft MVP and Microsoft Certified Trainer with expertise in Microsoft 365, Exchange, and PowerShell"
         keywords={['Cengiz YILMAZ', 'Microsoft MVP', 'Microsoft Certified Trainer', 'MCT', 'Microsoft 365', 'Exchange', 'PowerShell']}
       />
+      <script type="application/ld+json">
+        {JSON.stringify(personSchema)}
+      </script>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           {/* Header Section */}
@@ -200,7 +232,7 @@ const About: React.FC = () => {
                 Visit My Website
               </a>
               <a
-                href="https://www.linkedin.com/in/cengizyilmaz/"
+                href="https://linkedin.com/in/cengizyilmazz"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors"
