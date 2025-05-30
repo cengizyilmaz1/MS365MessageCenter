@@ -133,7 +133,7 @@ export const useMessages = () => {
       }
       
       // Fallback to fetching from JSON file
-      const response = await fetch('/@data/messages.json');
+      const response = await fetch('/messages.json');
       if (!response.ok) {
         throw new Error('Failed to fetch messages');
       }
