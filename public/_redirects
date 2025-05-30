@@ -8,7 +8,7 @@
 /manifest.json    /manifest.json    200
 
 # Message routes - handle both HTML files and directory-based routes
-/message/*.html    /message/:splat    200
+/message/*.html    /message/:splat/index.html    200
 /message/*/    /message/:splat/index.html    200
 /message/*    /message/:splat/index.html    200
 

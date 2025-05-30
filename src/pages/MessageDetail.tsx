@@ -745,22 +745,22 @@ const MessageDetail: React.FC = () => {
               {/* Related Blog Posts */}
               {selectedPosts.length > 0 && (
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">En Son Yazılar</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Posts</h2>
+                  <div className="space-y-4">
                     {selectedPosts.map((post, index) => (
                       <a
                         key={index}
                         href={post.URL}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label={`Blog yazısı: ${decodeHtmlEntities(post.Title)}`}
+                        className="block p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        aria-label={`Blog post: ${decodeHtmlEntities(post.Title)}`}
                       >
-                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1 line-clamp-2">
+                        <h4 className="text-base font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
                           {decodeHtmlEntities(post.Title)}
                         </h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {new Date(post.Date).toLocaleDateString('tr-TR', {
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {new Date(post.Date).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric'

@@ -225,7 +225,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up">
               <div className="flex items-center justify-between">
                 <div>
@@ -241,11 +241,11 @@ const Dashboard: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.1s'}}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-tertiary">This Week</p>
-                  <p className="text-2xl font-bold text-primary">{messagesThisWeek.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-tertiary">Major Changes</p>
+                  <p className="text-2xl font-bold text-primary">{highPriorityCount.toLocaleString()}</p>
                 </div>
-                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                  <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
+                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                  <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
                 </div>
               </div>
             </div>
@@ -253,23 +253,11 @@ const Dashboard: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.2s'}}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-tertiary">Major Changes</p>
-                  <p className="text-2xl font-bold text-primary">{majorChanges.length.toLocaleString()}</p>
-                </div>
-                <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                  <AlertCircle className="h-6 w-6 text-orange-600 dark:text-orange-400" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.3s'}}>
-              <div className="flex items-center justify-between">
-                <div>
                   <p className="text-sm font-medium text-tertiary">Action Required</p>
                   <p className="text-2xl font-bold text-primary">{actionRequiredCount.toLocaleString()}</p>
                 </div>
-                <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                  <AlertCircle className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                  <AlertCircle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                 </div>
               </div>
             </div>

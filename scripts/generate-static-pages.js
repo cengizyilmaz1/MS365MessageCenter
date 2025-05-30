@@ -192,6 +192,12 @@ async function generateSitemap(distPath, dataPath) {
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>${baseUrl}/messages</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>${baseUrl}/about</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>monthly</changefreq>
@@ -224,7 +230,7 @@ async function generateSitemap(distPath, dataPath) {
     
     sitemap += `
   <url>
-    <loc>${baseUrl}/message/${slug}</loc>
+    <loc>${baseUrl}/message/${slug}/</loc>
     <lastmod>${new Date(lastmod).toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -263,7 +269,7 @@ async function generateSitemap(distPath, dataPath) {
     
     newsSitemap += `
   <url>
-    <loc>${baseUrl}/message/${slug}</loc>
+    <loc>${baseUrl}/message/${slug}/</loc>
     <news:news>
       <news:publication>
         <news:name>Microsoft 365 Message Center</news:name>
