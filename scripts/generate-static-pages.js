@@ -185,8 +185,11 @@ async function generateSitemap(distPath, dataPath) {
   let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">`;
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd
+        http://www.google.com/schemas/sitemap-news/0.9
+        http://www.google.com/schemas/sitemap-news/0.9/sitemap-news.xsd">`;
   
   // Static pages
   const staticPages = [
@@ -218,12 +221,24 @@ async function generateSitemap(distPath, dataPath) {
     const lastmod = message.lastModifiedDate || message.LastModifiedDateTime || 
                     message.publishedDate || message.StartDateTime || currentDate;
     
+    const publishedDate = message.publishedDate || message.StartDateTime || lastmod;
+    const tags = (message.tags || message.Tags || []).join(', ');
+    
     sitemap += `
   <url>
     <loc>${baseUrl}/message/${slug}</loc>
     <lastmod>${new Date(lastmod).toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Microsoft 365 Message Center</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>${new Date(publishedDate).toISOString()}</news:publication_date>
+      <news:title>${title}</news:title>
+      <news:keywords>${tags}</news:keywords>
+    </news:news>
   </url>`;
   }
   

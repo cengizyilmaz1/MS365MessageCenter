@@ -178,6 +178,13 @@ const MessageDetail: React.FC = () => {
     );
   }
 
+  // Add SEO metadata for the message
+  const messageTitle = message.title || message.Title || '';
+  const messageDescription = message.summary || message.Summary || messageTitle;
+  const messageTags = message.tags || message.Tags || [];
+  const publishedDate = message.publishedDate || message.StartDateTime || message.CreatedDateTime;
+  const modifiedDate = message.lastModifiedDate || message.LastModifiedDateTime || publishedDate;
+
   const getSeverityBadge = (severity: MessageSeverity) => {
     const styles = {
       [MessageSeverity.HIGH]: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800',
@@ -401,14 +408,22 @@ const MessageDetail: React.FC = () => {
   return (
     <>
       <SEO 
-        title={message.title || message.Title || 'Microsoft 365 Update'}
-        description={pageDescription}
+        title={messageTitle}
+        description={messageDescription}
         type="article"
+        publishedTime={publishedDate}
+        modifiedTime={modifiedDate}
+        tags={messageTags}
         url={pageUrl}
-        keywords={keywords.split(', ')}
-        image={pageImage}
       />
-      <StructuredData message={message} type="article" />
+      <StructuredData 
+        type="article"
+        title={messageTitle}
+        description={messageDescription}
+        publishedTime={publishedDate}
+        modifiedTime={modifiedDate}
+        tags={messageTags}
+      />
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />

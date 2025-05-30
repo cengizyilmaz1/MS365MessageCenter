@@ -22,13 +22,43 @@ app.get('/messages.json', (req, res) => {
   }
 });
 
+// Handle data files
+app.get('/data/*', (req, res) => {
+  const filePath = path.join(__dirname, 'dist', req.path);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send('File not found');
+  }
+});
+
+// Handle @data files
+app.get('/@data/*', (req, res) => {
+  const filePath = path.join(__dirname, 'dist', req.path);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send('File not found');
+  }
+});
+
 // Handle message detail routes
-app.get('/message/:id', (req, res) => {
+app.get('/message/:slug', (req, res) => {
   const indexPath = path.join(__dirname, 'dist', 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
     res.status(404).send('Build files not found. Please run npm run build first.');
+  }
+});
+
+// Handle sitemap and robots.txt
+app.get(['/sitemap.xml', '/robots.txt'], (req, res) => {
+  const filePath = path.join(__dirname, 'dist', req.path);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send('File not found');
   }
 });
 
