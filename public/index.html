@@ -9,6 +9,24 @@
     <meta name="theme-color" content="#0078d4" />
     <link rel="apple-touch-icon" href="/logo.svg" />
     <link rel="manifest" href="/manifest.json" />
+    <script>
+        // GitHub Pages routing
+        (function() {
+            var pathSegmentsToKeep = 1;
+            var l = window.location;
+            if (l.pathname.indexOf('/?/') !== -1) {
+                var newPath = l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/~and~/g, '&');
+                var newSearch = l.search.slice(1).replace(/~and~/g, '&');
+                var newHash = l.hash;
+                l.replace(
+                    l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+                    '/' + newPath +
+                    (newSearch ? '?' + newSearch : '') +
+                    newHash
+                );
+            }
+        })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

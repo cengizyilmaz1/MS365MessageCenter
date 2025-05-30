@@ -1,0 +1,49 @@
+# Enable rewrite engine
+RewriteEngine On
+
+# Handle static files first
+RewriteRule ^message/([^/]+)\.html$ /message/$1/index.html [L]
+RewriteRule ^message/([^/]+)/$ /message/$1/index.html [L]
+RewriteRule ^message/([^/]+)$ /message/$1/index.html [L]
+
+# Handle API and data files
+RewriteRule ^messages\.json$ /messages.json [L]
+RewriteRule ^@data/(.*)$ /@data/$1 [L]
+RewriteRule ^data/(.*)$ /data/$1 [L]
+RewriteRule ^assets/(.*)$ /assets/$1 [L]
+
+# Handle sitemap and robots
+RewriteRule ^sitemap\.xml$ /sitemap.xml [L]
+RewriteRule ^news-sitemap\.xml$ /news-sitemap.xml [L]
+RewriteRule ^robots\.txt$ /robots.txt [L]
+
+# Handle manifest
+RewriteRule ^manifest\.json$ /manifest.json [L]
+
+# Handle SPA routes last
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [L]
+
+# Set security headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Content-Security-Policy "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data: blob:; font-src 'self' https: data:;"
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Set cache control for static files
+<FilesMatch "\.(html|xml|txt)$">
+    Header set Cache-Control "public, max-age=3600"
+</FilesMatch>
+
+<FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+
+# Set content types
+AddType application/xml .xml
+AddType text/plain .txt 

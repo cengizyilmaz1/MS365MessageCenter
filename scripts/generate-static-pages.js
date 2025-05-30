@@ -359,10 +359,15 @@ async function generateMessagePages(distPath, dataPath) {
     // Create message-specific HTML with proper meta tags and source information
     const messageHtml = generateMessageHtml(indexHtml, message, slug);
     
-    // Write the HTML file
+    // Write the HTML file - create both with and without trailing slash
     const messagePath = path.join(messageDir, slug);
     await ensureDirectoryExists(messagePath);
+    
+    // Write index.html in the slug directory
     await fs.writeFile(path.join(messagePath, 'index.html'), messageHtml);
+    
+    // Also write the HTML file directly in the message directory for direct access
+    await fs.writeFile(path.join(messageDir, `${slug}.html`), messageHtml);
     
     generatedCount++;
   }

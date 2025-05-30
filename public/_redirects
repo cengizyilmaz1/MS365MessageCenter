@@ -7,9 +7,10 @@
 /robots.txt    /robots.txt    200
 /manifest.json    /manifest.json    200
 
-# Message routes - handle both with and without trailing slash
-/message/*    /index.html    200
-/message/*/    /index.html    200
+# Message routes - handle both HTML files and directory-based routes
+/message/*.html    /message/:splat    200
+/message/*/    /message/:splat/index.html    200
+/message/*    /message/:splat/index.html    200
 
 # Redirect all routes to index.html for SPA
 /* /index.html 200
