@@ -356,7 +356,7 @@ async function generateMessagePages(distPath, dataPath) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
     
-    // Create message-specific HTML with proper meta tags
+    // Create message-specific HTML with proper meta tags and source information
     const messageHtml = generateMessageHtml(indexHtml, message, slug);
     
     // Write the HTML file
@@ -385,7 +385,7 @@ function generateMessageHtml(template, message, slug) {
     description = 'Microsoft 365 service update and announcement details.';
   }
   
-  // Extract keywords
+  // Extract keywords and source information
   const tags = message.tags || message.Tags || [];
   const keywords = [
     ...tags,
@@ -394,6 +394,13 @@ function generateMessageHtml(template, message, slug) {
     message.category || message.Category || 'Update',
     message.service || message.Services?.[0] || 'Microsoft 365'
   ].filter(Boolean).join(', ');
+  
+  // Source information
+  const source = {
+    name: message.source || message.Source || 'Microsoft 365 Message Center',
+    url: message.sourceUrl || message.SourceUrl || 'https://admin.microsoft.com',
+    type: message.sourceType || message.SourceType || 'Official'
+  };
   
   // Published and modified dates
   const publishedDate = message.publishedDate || message.StartDateTime;
@@ -428,7 +435,12 @@ function generateMessageHtml(template, message, slug) {
     'articleSection': message.category || message.Category || 'Service Update',
     'inLanguage': 'en-US',
     'isAccessibleForFree': true,
-    'license': 'https://www.microsoft.com/en-us/legal/terms-of-use'
+    'license': 'https://www.microsoft.com/en-us/legal/terms-of-use',
+    'sourceOrganization': {
+      '@type': 'Organization',
+      'name': source.name,
+      'url': source.url
+    }
   };
 
   // Generate meta tags
@@ -440,6 +452,12 @@ function generateMessageHtml(template, message, slug) {
     <meta name="keywords" content="${keywords}">
     <meta name="author" content="Microsoft 365">
     <meta name="publisher" content="Microsoft 365 Message Center">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Source Information -->
+    <meta name="source" content="${source.name}">
+    <meta name="source-url" content="${source.url}">
+    <meta name="source-type" content="${source.type}">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
@@ -471,6 +489,21 @@ function generateMessageHtml(template, message, slug) {
   // Update title and meta tags
   html = html.replace(/<title>.*?<\/title>/, `<title>${pageTitle}</title>`);
   html = html.replace('</head>', `${metaTags}\n</head>`);
+  
+  // Add source information to the page content
+  const sourceInfo = `
+    <div class="source-info" style="margin-top: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 4px;">
+      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #666;">Source Information</h3>
+      <p style="margin: 0; font-size: 0.9rem; color: #666;">
+        <strong>Source:</strong> ${source.name}<br>
+        <strong>URL:</strong> <a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.url}</a><br>
+        <strong>Type:</strong> ${source.type}
+      </p>
+    </div>
+  `;
+  
+  // Add source information before the closing body tag
+  html = html.replace('</body>', `${sourceInfo}\n</body>`);
   
   return html;
 }
