@@ -1,16 +1,30 @@
 import React, { useState } from 'react';
 import { useMessages } from '../hooks/useMessages';
-import { Loader, AlertTriangle, Search, Bell, Calendar, Tag, ChevronDown, ChevronUp, ExternalLink, Layers, Clock, AlertCircle, CheckCircle, MessageSquare, TrendingUp, ArrowRight, ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { Loader, AlertTriangle, Search, Bell, Calendar, Tag, ChevronDown, ChevronUp, ExternalLink, Layers, Clock, AlertCircle, CheckCircle, MessageSquare, TrendingUp, ArrowRight, ChevronLeft, ChevronRight, Download, Hash } from 'lucide-react';
 import { MessageSeverity, MessageCategory } from '../types';
 import { Link } from 'react-router-dom';
 import MessageFilter from '../components/MessageFilter';
 import SEO from '../components/SEO';
+import { downloadSitemap } from '../utils/generateSitemap';
 
 const Dashboard: React.FC = () => {
   const { messages, loading, error, markAsRead, filter, updateFilter, availableServices } = useMessages();
   const [sortBy, setSortBy] = useState<'date' | 'severity' | 'service'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+
+  // Map severity helper (same as in MessageDetail)
+  const mapSeverity = (severity: string | undefined): MessageSeverity => {
+    if (!severity) return MessageSeverity.INFORMATIONAL;
+    const severityMap: Record<string, MessageSeverity> = {
+      'high': MessageSeverity.HIGH,
+      'medium': MessageSeverity.MEDIUM,
+      'low': MessageSeverity.LOW,
+      'normal': MessageSeverity.INFORMATIONAL,
+      'informational': MessageSeverity.INFORMATIONAL
+    };
+    return severityMap[severity.toLowerCase()] || MessageSeverity.INFORMATIONAL;
+  };
 
   // Helper functions - moved before their usage
   const isMajorChange = (message: any) => {
@@ -123,6 +137,36 @@ const Dashboard: React.FC = () => {
     ? Math.max(...messages.map(msg => new Date(msg.publishedDate || msg.StartDateTime || '').getTime()).filter(time => !isNaN(time)))
     : null;
 
+  // Calculate statistics for dashboard
+  const messagesThisWeek = messages.filter(msg => {
+    const publishedDate = new Date(msg.publishedDate || msg.StartDateTime || '');
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    return publishedDate >= oneWeekAgo;
+  }).length;
+
+  const highPriorityCount = messages.filter(msg => 
+    msg.severity === MessageSeverity.HIGH || 
+    mapSeverity(msg.Severity) === MessageSeverity.HIGH
+  ).length;
+
+  const actionRequiredCount = actionRequired.length;
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const messagesPerPage = 12;
+  const totalPages = Math.ceil(sortMessages.length / messagesPerPage);
+  
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const currentMessages = sortMessages.slice(
+    (currentPage - 1) * messagesPerPage,
+    currentPage * messagesPerPage
+  );
+
   const getSeverityBadge = (severity: MessageSeverity) => {
     const styles = {
       [MessageSeverity.HIGH]: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800',
@@ -139,12 +183,22 @@ const Dashboard: React.FC = () => {
   };
 
   const getCategoryIcon = (category: MessageCategory) => {
-    const icons = {
+    const icons: Record<string, JSX.Element> = {
       [MessageCategory.PLANNED_MAINTENANCE]: <Clock className="h-4 w-4" />,
       [MessageCategory.SERVICE_INCIDENT]: <AlertTriangle className="h-4 w-4" />,
       [MessageCategory.ANNOUNCEMENT]: <Bell className="h-4 w-4" />,
       [MessageCategory.FEATURE_UPDATE]: <Tag className="h-4 w-4" />,
-      [MessageCategory.SECURITY_ADVISORY]: <AlertCircle className="h-4 w-4" />
+      [MessageCategory.SECURITY_ADVISORY]: <AlertCircle className="h-4 w-4" />,
+      [MessageCategory.SERVICE_DEGRADATION]: <AlertTriangle className="h-4 w-4" />,
+      [MessageCategory.SERVICE_RESTORED]: <CheckCircle className="h-4 w-4" />,
+      [MessageCategory.SERVICE_INTERRUPTION]: <AlertTriangle className="h-4 w-4" />,
+      [MessageCategory.SERVICE_ISSUE]: <AlertCircle className="h-4 w-4" />,
+      [MessageCategory.SERVICE_UPDATE]: <Tag className="h-4 w-4" />,
+      [MessageCategory.SERVICE_CHANGE]: <Tag className="h-4 w-4" />,
+      [MessageCategory.SERVICE_NOTIFICATION]: <Bell className="h-4 w-4" />,
+      [MessageCategory.SERVICE_ALERT]: <AlertTriangle className="h-4 w-4" />,
+      [MessageCategory.SERVICE_WARNING]: <AlertTriangle className="h-4 w-4" />,
+      [MessageCategory.SERVICE_INFO]: <Bell className="h-4 w-4" />
     };
     return icons[category] || <Tag className="h-4 w-4" />;
   };
@@ -221,15 +275,19 @@ const Dashboard: React.FC = () => {
 
           {/* Filter and Search Section */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 animate-scale-in">
-            <MessageFilter />
+            <MessageFilter 
+              filter={filter}
+              onFilterChange={updateFilter}
+              availableServices={availableServices}
+            />
           </div>
 
           {/* Messages Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {sortMessages.map((message, index) => {
+            {currentMessages.map((message, index) => {
               const messageTitle = message.title || message.Title || 'Untitled Message';
               const messageId = message.id || message.Id || `msg-${index}`;
-              const isRead = unreadMessages.has(messageId);
+              const isRead = message.isRead || false;
 
               return (
                 <div
@@ -284,7 +342,7 @@ const Dashboard: React.FC = () => {
 
                   {/* Summary */}
                   <p className="text-sm text-secondary line-clamp-3 mb-4">
-                    {message.summary || message.Summary || 'No summary available'}
+                    {message.summary || 'No summary available'}
                   </p>
 
                   {/* Published Date */}
@@ -292,11 +350,13 @@ const Dashboard: React.FC = () => {
                     <div className="flex items-center gap-2 text-sm text-tertiary">
                       <Calendar className="h-4 w-4" />
                       <span>
-                        {new Date(message.publishedDate || message.StartDateTime).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
+                        {message.publishedDate || message.StartDateTime ? 
+                          new Date(message.publishedDate || message.StartDateTime).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          }) : 'No date'
+                        }
                       </span>
                     </div>
                     
@@ -314,7 +374,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Empty State */}
-          {sortMessages.length === 0 && (
+          {currentMessages.length === 0 && (
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-12 text-center animate-fade-in">
               <MessageSquare className="h-16 w-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-primary mb-2">No messages found</h3>
