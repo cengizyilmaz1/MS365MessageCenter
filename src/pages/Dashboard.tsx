@@ -8,10 +8,14 @@ import SEO from '../components/SEO';
 import { downloadSitemap } from '../utils/generateSitemap';
 
 const Dashboard: React.FC = () => {
-  const { messages, loading, error, markAsRead, filter, updateFilter, availableServices } = useMessages();
+  const { messages, filteredMessages, loading, error, markAsRead, filter, updateFilter, availableServices } = useMessages();
   const [sortBy, setSortBy] = useState<'date' | 'severity' | 'service'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  
+  // Pagination state - moved up before any returns
+  const [currentPage, setCurrentPage] = useState(1);
+  const messagesPerPage = 12;
 
   // Map severity helper (same as in MessageDetail)
   const mapSeverity = (severity: string | undefined): MessageSeverity => {
@@ -90,7 +94,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const sortMessages = [...messages].sort((a, b) => {
+  const sortMessages = [...filteredMessages].sort((a, b) => {
     let comparison = 0;
     
     switch (sortBy) {
@@ -130,31 +134,29 @@ const Dashboard: React.FC = () => {
     setExpandedRows(newExpanded);
   };
 
-  const unreadMessages = messages.filter(msg => !msg.isRead);
-  const majorChanges = messages.filter(msg => isMajorChange(msg));
-  const actionRequired = messages.filter(msg => isActionRequired(msg));
-  const lastUpdateDate = messages.length > 0 
-    ? Math.max(...messages.map(msg => new Date(msg.publishedDate || msg.StartDateTime || '').getTime()).filter(time => !isNaN(time)))
+  const unreadMessages = filteredMessages.filter(msg => !msg.isRead);
+  const majorChanges = filteredMessages.filter(msg => isMajorChange(msg));
+  const actionRequired = filteredMessages.filter(msg => isActionRequired(msg));
+  const lastUpdateDate = filteredMessages.length > 0 
+    ? Math.max(...filteredMessages.map(msg => new Date(msg.publishedDate || msg.StartDateTime || '').getTime()).filter(time => !isNaN(time)))
     : null;
 
   // Calculate statistics for dashboard
-  const messagesThisWeek = messages.filter(msg => {
+  const messagesThisWeek = filteredMessages.filter(msg => {
     const publishedDate = new Date(msg.publishedDate || msg.StartDateTime || '');
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     return publishedDate >= oneWeekAgo;
   }).length;
 
-  const highPriorityCount = messages.filter(msg => 
+  const highPriorityCount = filteredMessages.filter(msg => 
     msg.severity === MessageSeverity.HIGH || 
     mapSeverity(msg.Severity) === MessageSeverity.HIGH
   ).length;
 
   const actionRequiredCount = actionRequired.length;
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const messagesPerPage = 12;
+  // Pagination calculations
   const totalPages = Math.ceil(sortMessages.length / messagesPerPage);
   
   const handlePageChange = (page: number) => {
@@ -228,7 +230,7 @@ const Dashboard: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-tertiary">Total Messages</p>
-                  <p className="text-2xl font-bold text-primary">{messages.length.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-primary">{filteredMessages.length.toLocaleString()}</p>
                 </div>
                 <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                   <MessageSquare className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -251,11 +253,11 @@ const Dashboard: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.2s'}}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-tertiary">High Priority</p>
-                  <p className="text-2xl font-bold text-primary">{highPriorityCount.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-tertiary">Major Changes</p>
+                  <p className="text-2xl font-bold text-primary">{majorChanges.length.toLocaleString()}</p>
                 </div>
-                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                  <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                  <AlertCircle className="h-6 w-6 text-orange-600 dark:text-orange-400" />
                 </div>
               </div>
             </div>
@@ -350,8 +352,8 @@ const Dashboard: React.FC = () => {
                     <div className="flex items-center gap-2 text-sm text-tertiary">
                       <Calendar className="h-4 w-4" />
                       <span>
-                        {message.publishedDate || message.StartDateTime ? 
-                          new Date(message.publishedDate || message.StartDateTime).toLocaleDateString('en-US', {
+                        {(message.publishedDate || message.StartDateTime) ? 
+                          new Date(message.publishedDate || message.StartDateTime || '').toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric'

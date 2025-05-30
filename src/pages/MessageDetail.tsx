@@ -92,7 +92,7 @@ const MessageDetail: React.FC = () => {
     const loadBlogPosts = async () => {
       try {
         console.log('Blog posts loading...');
-        const csvUrl = '/data/CengizYILMAZBlogPost_20250528.csv';
+        const csvUrl = '/data/CengizYILMAZBlogPost_latest.csv';
         const response = await fetch(csvUrl);
         console.log('Fetch response:', response);
         const csvText = await response.text();
@@ -576,16 +576,19 @@ const MessageDetail: React.FC = () => {
                   Details
                 </h2>
                 <div 
-                  className="prose prose-lg dark:prose-invert max-w-none
-                           prose-headings:font-black prose-headings:text-gray-900 dark:prose-headings:text-white
-                           prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
-                           prose-p:text-gray-700 dark:prose-p:text-gray-200
-                           prose-a:text-blue-600 dark:prose-a:text-blue-400
-                           prose-strong:text-gray-900 dark:prose-strong:text-white
-                           prose-ul:text-gray-700 dark:prose-ul:text-gray-200
-                           prose-ol:text-gray-700 dark:prose-ol:text-gray-200
-                           prose-li:mb-2"
-                  dangerouslySetInnerHTML={{ __html: processContent(message.content || message.Body?.Content || '') }}
+                  className="prose prose-lg max-w-none dark:prose-invert 
+                    prose-headings:text-gray-900 dark:prose-headings:text-gray-100
+                    prose-p:text-gray-700 dark:prose-p:text-gray-300
+                    prose-strong:text-gray-900 dark:prose-strong:text-gray-100
+                    prose-a:text-blue-600 dark:prose-a:text-blue-400
+                    prose-li:text-gray-700 dark:prose-li:text-gray-300
+                    prose-ul:text-gray-700 dark:prose-ul:text-gray-300
+                    prose-ol:text-gray-700 dark:prose-ol:text-gray-300
+                    prose-code:text-gray-800 dark:prose-code:text-gray-200
+                    prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800"
+                  dangerouslySetInnerHTML={{ 
+                    __html: processContent(message.content || message.Body?.Content || '') 
+                  }}
                 />
               </div>
             </div>
@@ -700,14 +703,11 @@ const MessageDetail: React.FC = () => {
                 </div>
               )}
 
-              {/* Blog Posts Section - Sidebar */}
+              {/* Related Blog Posts */}
               {selectedPosts.length > 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <FileText className="h-5 w-5" />
-                    Blogdan Son Yazılar
-                  </h3>
-                  <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">En Son Yazılar</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {selectedPosts.map((post, index) => (
                       <a
                         key={index}
