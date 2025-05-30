@@ -26,6 +26,8 @@ export const generateSitemap = (messages: Message[]): string => {
     })
     .map(message => {
       const title = message.title || message.Title;
+      if (!title) return null;
+      
       const slug = title.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
@@ -39,7 +41,8 @@ export const generateSitemap = (messages: Message[]): string => {
         changefreq: 'weekly',
         priority: '0.7'
       };
-    });
+    })
+    .filter((url): url is SitemapUrl => url !== null);
   
   const allUrls = [...staticPages, ...messageUrls];
   

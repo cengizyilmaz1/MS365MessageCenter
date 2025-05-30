@@ -301,25 +301,34 @@ const MessageDetail: React.FC = () => {
     const text = (message.content || message.Body?.Content || '').replace(/<[^>]+>/g, '');
     pageDescription = text.substring(0, 160).trim();
   } else {
-    pageDescription = 'Microsoft 365 güncellemeleri ve değişiklikleri hakkında detaylı bilgi.';
+    pageDescription = 'Microsoft 365 service update and announcement details.';
   }
+
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const pageImage = 'https://message.cengizyilmaz.net/og-image.png'; // Varsa özel bir görsel
+  const pageImage = 'https://message.cengizyilmaz.net/og-image.png';
   const publishedTime = allDates.published ? new Date(allDates.published).toISOString() : undefined;
-  const author = 'Cengiz YILMAZ';
+  const modifiedTime = allDates.lastModified ? new Date(allDates.lastModified).toISOString() : undefined;
+  const author = 'Microsoft 365';
+  const publisher = 'Microsoft 365 Message Center';
+
   // Keywords
   const tagKeywords = (message.tags || message.Tags || []).join(', ');
   const titleWords = (message.title || message.Title || '').split(' ').slice(0, 5).join(', ');
   const summaryWords = (pageDescription || '').split(' ').slice(0, 5).join(', ');
   const keywordsArr = [
-    message.category,
+    message.category || message.Category,
     extractedDetails.platform,
     extractedDetails.roadmapId,
     tagKeywords,
     titleWords,
     summaryWords,
     'Microsoft 365',
-    'Message Center'
+    'Message Center',
+    'Service Update',
+    'Announcement',
+    'Feature Update',
+    'Maintenance',
+    'Security Advisory'
   ];
   const keywords = Array.from(new Set(keywordsArr.join(', ').split(',').map(k => k.trim()).filter(Boolean))).join(', ');
 
@@ -330,57 +339,81 @@ const MessageDetail: React.FC = () => {
     'headline': pageTitle,
     'description': pageDescription,
     'datePublished': publishedTime,
+    'dateModified': modifiedTime,
     'author': {
-      '@type': 'Person',
-      'name': author
+      '@type': 'Organization',
+      'name': author,
+      'url': 'https://www.microsoft.com'
     },
-    'mainEntityOfPage': pageUrl,
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': pageUrl
+    },
     'image': pageImage,
     'publisher': {
       '@type': 'Organization',
-      'name': 'Cengiz YILMAZ',
+      'name': publisher,
       'logo': {
         '@type': 'ImageObject',
         'url': 'https://message.cengizyilmaz.net/logo.png'
       }
-    }
+    },
+    'keywords': keywords,
+    'articleSection': message.category || message.Category || 'Service Update',
+    'inLanguage': 'en-US',
+    'isAccessibleForFree': true,
+    'license': 'https://www.microsoft.com/en-us/legal/terms-of-use'
   };
 
   return (
     <>
       <SEO 
         title={message.title || message.Title || 'Microsoft 365 Update'}
-        description={message.summary || message.Body?.Content?.substring(0, 160) || 'Microsoft 365 service update'}
+        description={pageDescription}
         type="article"
-        url={`https://message.cengizyilmaz.net/message/${message.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-        keywords={[
-          ...(message.tags || message.Tags || []),
-          message.service || message.Services?.[0] || 'Microsoft 365',
-          message.category || message.Category || 'Update'
-        ]}
+        url={pageUrl}
+        keywords={keywords.split(', ')}
+        image={pageImage}
       />
+      <StructuredData message={message} type="article" />
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={keywords} />
+        <meta name="author" content={author} />
+        <meta name="publisher" content={publisher} />
+        <link rel="canonical" href={pageUrl} />
+        
+        {/* Open Graph Meta Tags */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={pageImage} />
+        <meta property="og:site_name" content={publisher} />
+        <meta property="og:locale" content="en_US" />
+        <meta property="article:published_time" content={publishedTime} />
+        <meta property="article:modified_time" content={modifiedTime} />
+        <meta property="article:section" content={message.category || message.Category || 'Service Update'} />
+        <meta property="article:tag" content={keywords} />
+        
+        {/* Twitter Card Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={pageImage} />
+        <meta name="twitter:creator" content="@microsoft365" />
+        
+        {/* Additional Meta Tags */}
+        <meta name="robots" content="index, follow" />
+        <meta name="language" content="English" />
+        <meta name="revisit-after" content="7 days" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
+      </Helmet>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Helmet>
-          <title>{pageTitle}</title>
-          <meta name="description" content={pageDescription} />
-          <meta name="keywords" content={keywords} />
-          <meta name="author" content={author} />
-          <link rel="canonical" href={pageUrl} />
-          <meta property="og:type" content="article" />
-          <meta property="og:title" content={pageTitle} />
-          <meta property="og:description" content={pageDescription} />
-          <meta property="og:url" content={pageUrl} />
-          <meta property="og:image" content={pageImage} />
-          <meta property="og:locale" content="tr_TR" />
-          <meta property="article:published_time" content={publishedTime} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={pageTitle} />
-          <meta name="twitter:description" content={pageDescription} />
-          <meta name="twitter:image" content={pageImage} />
-          <meta name="twitter:creator" content="@cengizyilmaznet" />
-          <link rel="alternate" hrefLang="tr" href={pageUrl} />
-          <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
-        </Helmet>
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           {/* Back Button */}
           <button
@@ -525,7 +558,7 @@ const MessageDetail: React.FC = () => {
                   <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   Summary
                 </h2>
-                <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-10">
+                <p className="text-lg text-gray-700 dark:text-gray-200 leading-relaxed mb-10">
                   {message.summary || 'No summary available'}
                 </p>
 
@@ -537,11 +570,11 @@ const MessageDetail: React.FC = () => {
                   className="prose prose-lg dark:prose-invert max-w-none
                            prose-headings:font-black prose-headings:text-gray-900 dark:prose-headings:text-white
                            prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
-                           prose-p:text-gray-700 dark:prose-p:text-gray-300
+                           prose-p:text-gray-700 dark:prose-p:text-gray-200
                            prose-a:text-blue-600 dark:prose-a:text-blue-400
                            prose-strong:text-gray-900 dark:prose-strong:text-white
-                           prose-ul:text-gray-700 dark:prose-ul:text-gray-300
-                           prose-ol:text-gray-700 dark:prose-ol:text-gray-300
+                           prose-ul:text-gray-700 dark:prose-ul:text-gray-200
+                           prose-ol:text-gray-700 dark:prose-ol:text-gray-200
                            prose-li:mb-2"
                   dangerouslySetInnerHTML={{ __html: processContent(message.content || message.Body?.Content || '') }}
                 />
