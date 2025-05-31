@@ -720,6 +720,41 @@ const MessageDetail: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* Source Information */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <ExternalLink className="h-5 w-5" />
+                  Source Information
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-[80px]">Source:</span>
+                    <span className="text-sm text-gray-900 dark:text-white">
+                      Microsoft 365 Message Center
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-[80px]">URL:</span>
+                    <a 
+                      href={`https://admin.microsoft.com/Adminportal/Home#/MessageCenter/${extractedDetails.messageId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                      onClick={() => trackExternalLink('Microsoft Admin Center', `Message ${extractedDetails.messageId}`)}
+                    >
+                      Microsoft Admin Center
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-[80px]">Type:</span>
+                    <span className="text-sm text-gray-900 dark:text-white">
+                      Official
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

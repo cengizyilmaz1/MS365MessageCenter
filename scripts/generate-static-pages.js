@@ -174,6 +174,17 @@ async function calculateDirectorySize(dirPath) {
   return totalSize;
 }
 
+// Generate slug from title - matching src/utils/slug.ts logic
+function generateSlug(title) {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Keep letters, numbers, spaces, and hyphens
+    .replace(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+}
+
 async function generateSitemap(distPath, dataPath) {
   const messagesPath = path.join(dataPath, 'messages.json');
   const messagesData = await fs.readFile(messagesPath, 'utf-8');
@@ -221,16 +232,14 @@ async function generateSitemap(distPath, dataPath) {
     const title = message.title || message.Title;
     if (!title) continue;
     
-    const slug = title.toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+    const slug = generateSlug(title);
     
     const lastmod = message.lastModifiedDate || message.LastModifiedDateTime || 
                     message.publishedDate || message.StartDateTime || currentDate;
     
     sitemap += `
   <url>
-    <loc>${baseUrl}/message/${slug}/</loc>
+    <loc>${baseUrl}/message/${slug}</loc>
     <lastmod>${new Date(lastmod).toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -260,16 +269,14 @@ async function generateSitemap(distPath, dataPath) {
     const title = message.title || message.Title;
     if (!title) continue;
     
-    const slug = title.toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+    const slug = generateSlug(title);
     
     const publishedDate = message.publishedDate || message.StartDateTime || currentDate;
     const tags = (message.tags || message.Tags || []).join(', ');
     
     newsSitemap += `
   <url>
-    <loc>${baseUrl}/message/${slug}/</loc>
+    <loc>${baseUrl}/message/${slug}</loc>
     <news:news>
       <news:publication>
         <news:name>Microsoft 365 Message Center</news:name>
@@ -358,9 +365,7 @@ async function generateMessagePages(distPath, dataPath) {
     if (!title) continue;
     
     // Generate stable slug from title
-    const slug = title.toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+    const slug = generateSlug(title);
     
     // Create message-specific HTML with proper meta tags and source information
     const messageHtml = generateMessageHtml(indexHtml, message, slug);

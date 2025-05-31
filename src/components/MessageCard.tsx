@@ -35,15 +35,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onMarkAsRead }) => {
 
   const getMessageUrl = () => {
     const title = message.title || message.Title || '';
-    const id = message.id || message.Id || '';
-    
-    // Use only ID if available, otherwise use slug from title
-    if (id) {
-      return `/message/${id}`;
-    } else {
-      // Fallback to title-only slug
-      return `/message/${generateMessageId(title)}`;
-    }
+    // Always use title slug for consistent URLs
+    return `/message/${generateMessageId(title)}`;
   };
 
   return (

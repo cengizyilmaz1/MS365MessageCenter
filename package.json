@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && node scripts/post-build.js && node scripts/generate-sitemap.js",
+    "build": "tsc && vite build && node scripts/generate-static-pages.js",
     "preview": "vite preview",
     "serve": "node server.js",
     "typecheck": "tsc --noEmit",

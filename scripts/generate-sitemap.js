@@ -20,13 +20,14 @@ function generateSlug(title) {
     .replace(/^-+|-+$/g, '');
 }
 
-// Generate message ID
+// Generate message ID - matching the logic in src/utils/slug.ts
 function generateMessageId(title, id) {
-  const slug = generateSlug(title);
+  // If we have an ID, use it directly (matching the updated logic)
   if (id) {
-    return `${id}-${slug}`.substring(0, 100);
+    return id.toString();
   }
-  return slug;
+  // Otherwise fall back to slug
+  return generateSlug(title);
 }
 
 // Generate sitemap XML
@@ -82,16 +83,10 @@ async function generateSitemap() {
       
       messageUrls = messagesData.map(msg => {
         const title = msg.Title || msg.title || '';
-        const id = msg.Id || msg.id || '';
         
-        // Use only ID if available
-        let messageUrl;
-        if (id) {
-          messageUrl = `${BASE_URL}/message/${id}`;
-        } else {
-          // Fallback to title slug
-          messageUrl = `${BASE_URL}/message/${generateSlug(title)}`;
-        }
+        // Always use title slug for URLs (matching MessageCard)
+        const messageSlug = generateSlug(title);
+        const messageUrl = `${BASE_URL}/message/${messageSlug}`;
         
         const lastMod = msg.LastModifiedDateTime || msg.lastModifiedDate || msg.StartDateTime || msg.publishedDate || today;
         
