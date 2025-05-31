@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && node scripts/generate-sitemap.js",
+    "build": "npm run update-browserslist && tsc && vite build && node scripts/generate-sitemap.js",
     "preview": "vite preview",
     "serve": "node server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "generate-sitemap": "node scripts/generate-sitemap.js"
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "update-browserslist": "npx update-browserslist-db@latest"
   },
   "dependencies": {
     "date-fns": "^3.3.1",

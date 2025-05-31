@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import glob from 'glob';
+import { glob } from 'glob';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,7 +10,7 @@ const BASE_URL = 'https://message.cengizyilmaz.net';
 const PUBLIC_DIR = path.join(__dirname, '../public');
 
 // Get all message files
-const messageFiles = await glob.glob(path.join(__dirname, '../data/messages/*.json'));
+const messageFiles = await glob(path.join(__dirname, '../data/messages/*.json'));
 
 // Generate sitemap XML
 async function generateSitemap() {
