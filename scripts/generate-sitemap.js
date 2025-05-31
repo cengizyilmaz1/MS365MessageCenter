@@ -90,11 +90,10 @@ async function generateSitemap() {
       
       messageUrls = messagesData.map(msg => {
         const title = msg.Title || msg.title || '';
-        const id = msg.Id || msg.id || '';
         
-        // Use message ID for URLs to ensure consistency
-        const messageId = generateMessageId(title, id);
-        const messageUrl = `${BASE_URL}/message/${messageId}`;
+        // Always use title slug for better SEO and readability
+        const messageSlug = generateSlug(title);
+        const messageUrl = `${BASE_URL}/message/${messageSlug}`;
         
         const lastMod = msg.LastModifiedDateTime || msg.lastModifiedDate || msg.StartDateTime || msg.publishedDate || today;
         

@@ -12,13 +12,9 @@ export function generateSlug(title: string): string {
 }
 
 /**
- * Generate a unique message ID - now using only ID for simplicity
+ * Generate a unique message ID - using title slug for better SEO
  */
 export function generateMessageId(title: string, id?: string | number): string {
-  // If we have an ID, use it directly
-  if (id) {
-    return id.toString();
-  }
-  // Otherwise fall back to slug
+  // Always use title slug for better SEO and readability
   return generateSlug(title);
 } 

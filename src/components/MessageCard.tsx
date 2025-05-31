@@ -3,7 +3,7 @@ import { MessageCategory, MessageSeverity, Message } from '../types';
 import { format, parseISO } from 'date-fns';
 import { AlertTriangle, Info, Clock, Wrench, Shield, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { generateMessageId } from '../utils/slug';
+import { generateMessageId, generateSlug } from '../utils/slug';
 
 interface MessageCardProps {
   message: Message;
@@ -35,9 +35,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onMarkAsRead }) => {
 
   const getMessageUrl = () => {
     const title = message.title || message.Title || '';
-    const id = message.id || message.Id;
-    // Use message ID for consistent URLs
-    return `/message/${generateMessageId(title, id)}`;
+    // Always use title slug for better SEO and readability
+    return `/message/${generateSlug(title)}`;
   };
 
   return (

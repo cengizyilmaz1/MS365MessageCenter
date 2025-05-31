@@ -254,20 +254,30 @@ const MessageDetail: React.FC = () => {
           type="website"
         />
         <StructuredData type="website" />
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-            <AlertTriangle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Message Not Found</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              The message you're looking for doesn't exist or has been removed.
-            </p>
-            <Link
-              to="/"
-              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Messages
-            </Link>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
+          <div className="max-w-lg w-full text-center">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+              <AlertTriangle className="h-16 w-16 text-yellow-500 mx-auto mb-6" />
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Message Not Found</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-8">
+                The message you're looking for doesn't exist or has been removed.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+                >
+                  <ArrowLeft className="h-5 w-5 mr-2" />
+                  Back to Messages
+                </Link>
+                <button
+                  onClick={() => window.history.back()}
+                  className="inline-flex items-center justify-center px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Go Back
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </>
