@@ -10,8 +10,26 @@ const PUBLIC_DIR = path.join(__dirname, '../public');
 const DIST_DIR = path.join(__dirname, '../dist');
 const DATA_DIR = path.join(__dirname, '../@data');
 
-// Generate slug from title
+// Clean title by removing 'Updated:', 'Update:' gibi önekleri
+function cleanTitle(title) {
+  return title.replace(/^(updated|update)[:\-\s]+/i, '').trim();
+}
+
+// Generate slug from cleaned title
 function generateSlug(title) {
+  if (!title) return '';
+  const cleaned = cleanTitle(title);
+  return cleaned
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Generate message ID from title (same as in MessageDetail.tsx)
+function generateMessageId(title) {
   if (!title) return '';
   return title
     .toLowerCase()
@@ -95,15 +113,15 @@ async function generateSitemap() {
         .map(msg => {
           const title = msg.Title || msg.title || '';
           const id = msg.Id || msg.id || '';
-          const messageSlug = generateSlug(title);
+          const messageId = generateSlug(title);
           
-          // Skip if no valid slug could be generated
-          if (!messageSlug) {
-            console.warn(`Skipping message ${id} - could not generate valid slug from title: ${title}`);
+          // Skip if no valid ID could be generated
+          if (!messageId) {
+            console.warn(`Skipping message ${id} - could not generate valid ID from title: ${title}`);
             return null;
           }
           
-          const messageUrl = `${BASE_URL}/message/${messageSlug}`;
+          const messageUrl = `${BASE_URL}/message/${messageId}`;
           const lastMod = msg.LastModifiedDateTime || msg.lastModifiedDate || msg.StartDateTime || msg.publishedDate || today;
           
           return {
