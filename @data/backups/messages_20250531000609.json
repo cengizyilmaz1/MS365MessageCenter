@@ -4,98 +4,6 @@
     "Attachments": null,
     "AttachmentsArchive": null,
     "Body": {
-      "Content": "<p>Updated May 30, 2025: We have updated the timeline below. Thank you for your patience.</p><p>Coming soon: Users can share Microsoft Teams apps or agents from the app or agent profile and from the app side panel in Teams.</p><p>This message applies to Teams for Windows desktop, Teams for Mac desktop and Teams on the web.\n</p><p>A Microsoft 365 Copilot license is not required to share agents as described in this message. If a user has access to the agents, the users will be able to share them.</p><p>This message is associated with Microsoft 365 Roadmap ID <a href=\"https://www.microsoft.com/microsoft-365/roadmap?filters=&amp;searchterms=483355\" target=\"_blank\">483355</a>.\n</p><p>[When this will happen:]\n</p><p>Targeted Release: We will begin rolling out early July 2025 and expect to complete by mid-July 2025. \n</p><p>General Availability (Worldwide): We will begin rolling out mid-July 2025 and expect to complete by late July 2025.</p><p>[How this will affect your organization:]\n</p><p>After this rollout:\n</p><ul><li>Users can select the <i>Share </i>option when hovering on the app or agent icon in 1:1 chat mode with the app or agent.\n</li><li>After a user selects the <i>+Apps</i> icon from the three-dot menu in the top right of any chat, the user can right-click to share the app or agent.</li></ul><p>Share option from hovering on app/agent icon:\n</p><p><img src=\"https://cxcs.microsoft.net/file/ccp/en-us/8c967284-fc8a-4e09-a963-5136568596ad\" style=\"width: 400px;\" alt=\"user controls\">\n</p><p>Sharing from right panel:\n</p><p><img src=\"https://cxcs.microsoft.net/file/ccp/en-us/3b30533e-d6d9-41ff-b33b-164dc9962ee1\" style=\"width: 400px;\" alt=\"user controls\">\n</p><p>This change will be on by default.\n</p><p>[What you need to do to prepare:]\n</p><p>This rollout will happen automatically by the specified dates with no admin action required before the rollout. Review your current configuration to determine the impact for your organization. You may want to notify your users about this change and update any relevant documentation.</p>",
-      "ContentType": "html"
-    },
-    "Category": "stayInformed",
-    "Details": [
-      {
-        "Name": "RoadmapIds",
-        "Value": "483355"
-      },
-      {
-        "Name": "Summary",
-        "Value": "Users will soon be able to share Microsoft Teams apps or agents from their profile or the Teams side panel. This update, rolling out in July 2025, applies to Teams for Windows, Mac, and web. No Microsoft 365 Copilot license is required. Admin action is not needed before the rollout."
-      },
-      {
-        "Name": "Platforms",
-        "Value": "Desktop, Mac, Web"
-      }
-    ],
-    "EndDateTime": "2025-10-06T07:00:00Z",
-    "HasAttachments": false,
-    "Id": "MC1037767",
-    "IsMajorChange": false,
-    "LastModifiedDateTime": "2025-05-30T20:55:42.883Z",
-    "Services": [
-      "Microsoft Teams"
-    ],
-    "Severity": "normal",
-    "StartDateTime": "2025-03-20T23:00:40Z",
-    "Tags": [
-      "Updated message",
-      "New feature",
-      "User impact"
-    ],
-    "Title": "(Updated) Microsoft Teams: Share Teams apps and agents from their profile or the Teams side panel",
-    "ViewPoint": {
-      "IsArchived": null,
-      "IsFavorited": null,
-      "IsRead": null
-    },
-    "AdditionalProperties": {}
-  },
-  {
-    "ActionRequiredByDateTime": null,
-    "Attachments": null,
-    "AttachmentsArchive": null,
-    "Body": {
-      "Content": "<p>Updated May 30, 2025: We have updated the timeline below. Thank you for your patience.\n</p><p>Microsoft Purview Communication Compliance is improving the capabilities and customization of policy alerts.</p><p>This message is associated with Microsoft 365 Roadmap ID <a href=\"https://www.microsoft.com/microsoft-365/roadmap?filters=&amp;searchterms=181825\" target=\"_blank\">181825</a>.</p><p>[When this will happen:]\n</p><p>Public Preview: We will begin rolling out mid-April 2025 (previously mid-January)) and expect to complete by late April 2025 (previously late February).\n</p><p>General Availability (Worldwide): We will begin rolling out late June 2025 (previously mid-May) and expect to complete by mid-July 2025 (previously late May).</p><p>[How this will affect your organization:]\n</p><p>Communication Compliance is improving the capabilities and customization of policy alerts. Admins will be able to customize the alert frequency per policy as well as adjust the email alerts frequency and recipients within the policy creation wizard by navigating to the new alerts page.</p><p>This new feature is available by default.</p><p>[What you need to do to prepare:]\n</p><p>Microsoft Purview Communication Compliance provides the tools to help organizations detect business conduct and regulatory compliance violations (e.g. SEC or FINRA), such as sensitive or confidential information, harassing or threatening language, and sharing of adult content. Usernames are pseudonymized by default, role-based access controls are built in, investigators are opted in by an admin, and audit logs are in place to help ensure user-level privacy.</p><p>You can access the Communication Compliance solution in the <a href=\"https://purview.microsoft.com/compliance\" target=\"_blank\">Microsoft Purview compliance portal.&nbsp;</a></p><p>Learn more:&nbsp;</p><p>•\t<a href=\"https://docs.microsoft.com/microsoft-365/compliance/communication-compliance?view=o365-worldwide\" target=\"_blank\">Learn about communication compliance&nbsp;</a></p><p>•\t<a href=\"https://learn.microsoft.com/purview/communication-compliance-policies?view=o365-worldwide#alert-policies\" target=\"_blank\">Create and manage communication compliance alert policies | Microsoft Learn</a></p>",
-      "ContentType": "html"
-    },
-    "Category": "stayInformed",
-    "Details": [
-      {
-        "Name": "RoadmapIds",
-        "Value": "181825"
-      },
-      {
-        "Name": "Summary",
-        "Value": "Microsoft Purview Communication Compliance is enhancing policy alerts with improved capabilities and customization. Public Preview will roll out from mid-April to late April 2025, and General Availability will be from late June to mid-July 2025. Admins can customize alert frequency and recipients within the policy creation wizard."
-      },
-      {
-        "Name": "Platforms",
-        "Value": "Web"
-      }
-    ],
-    "EndDateTime": "2025-07-07T07:00:00Z",
-    "HasAttachments": false,
-    "Id": "MC920304",
-    "IsMajorChange": false,
-    "LastModifiedDateTime": "2025-05-30T20:21:25.223Z",
-    "Services": [
-      "Microsoft Purview"
-    ],
-    "Severity": "normal",
-    "StartDateTime": "2024-10-28T22:51:49Z",
-    "Tags": [
-      "Updated message",
-      "New feature",
-      "Admin impact"
-    ],
-    "Title": "(Updated) Microsoft Purview | Communication Compliance: Policy alerts improvements",
-    "ViewPoint": {
-      "IsArchived": null,
-      "IsFavorited": null,
-      "IsRead": null
-    },
-    "AdditionalProperties": {}
-  },
-  {
-    "ActionRequiredByDateTime": null,
-    "Attachments": null,
-    "AttachmentsArchive": null,
-    "Body": {
       "Content": "<p>Coming soon for Microsoft Purview | Data Loss Prevention for Microsoft Exchange Online:</p><p>Before this rollout, Exchange Online relies only on the file extension (such as .docx and .pdf) to identify the type of an attachment but this approach can be bypassed if a file is renamed with a misleading extension. To address this, we’re enhancing our detection logic to go beyond just the visible file extension. After this rollout, even if a file’s extension is altered, Exchange will evaluate the actual content of the file to determine its true type. This ensures that policies based on file type (such as <i>File extension is…</i>) will remain effective and secure, even when attachments are renamed or disguised.\n\nThis improvement provides you with a more robust and reliable way to enforce compliance and security rules around file sharing.</p><p>This message is associated with Microsoft 365 Roadmap ID <a href=\"https://www.microsoft.com/microsoft-365/roadmap?filters=&amp;searchterms=493291\" target=\"_blank\">493291</a>.</p><p>[When this will happen:]\n</p><p>Public Preview: We will begin rolling out mid-July 2025 and expect to complete by late August 2025.</p><p>General Availability (Worldwide): We will begin rolling out late August 2025 and expect to complete by late September 2025.\n</p><p>General Availability (GCC, GCC High): We will begin rolling out late August 2025 and expect to complete by mid-October 2025.\n</p><p>[How this will affect your organization:]</p><p>After this rollout, you can configure rules in the Purview portal based on the true file type using the <i>File Extension is</i> predicate in Data Loss Prevention for Exchange Online, and then you will start to see seeing the relevant details for rule matches in all the experiences, such as <i>Alerts </i>and <i>Activity explorer</i>.\n</p><p>To set up this feature for Exchange, go to <i>Data Loss Prevention &gt; Policy Settings &gt; Create rule </i>and use the<i> File extension is</i> condition:\n</p><p><img src=\"https://cxcs.microsoft.net/file/ccp/en-us/f72b28e6-0a73-4b61-abd8-238172b0939c\" style=\"width: 400px;\" alt=\"admin controls\">\n</p><p>How the configured rule appears in other Purview experiences. For example, in Incident reports:\n</p><p><img src=\"https://cxcs.microsoft.net/file/ccp/en-us/793f00df-04fb-434a-bbc5-cb51c9422145\" style=\"width: 400px;\" alt=\"admin controls\">\n</p><p>How the configured rule appears in <i>Alerts:\n</i></p><p><img src=\"https://cxcs.microsoft.net/file/ccp/en-us/f7aa5251-72ff-4826-a562-17a7b1a9285d\" style=\"width: 400px;\" alt=\"admin controls\">\n</p><p>How the configured rule appears in <i>Activity explorer:\n</i></p><p><img src=\"https://cxcs.microsoft.net/file/ccp/en-us/5563aa22-da23-4aa6-b595-6c67b6b772f0\" style=\"width: 400px;\" alt=\"admin controls\">\n</p><p>This feature will be available by default for admins to configure.</p><p>[What you need to do to prepare:]</p><p>This rollout will happen automatically by the specified dates with no admin action required before the rollout. Review your current configuration to assess the impact on your organization. You may want to notify your users about this change and update any relevant documentation.</p><p>If you are already using the File Extension is predicate in Data Loss Prevention for Exchange Online, be prepared to see increase in number of detections for these predicates because we will validate these predicates for both visible and the true file extensions after this rollout.</p><p>Learn more: <a href=\"https://learn.microsoft.com/powershell/module/exchange/new-dlpcompliancerule?view=exchange-ps\" target=\"_blank\">New-DlpComplianceRule (ExchangePowerShell) | Microsoft Learn</a></p>",
       "ContentType": "html"
     },
@@ -1056,6 +964,52 @@
       "Admin impact"
     ],
     "Title": "(Updated) Microsoft SharePoint: Storage insights will be included in Microsoft 365 admin center usage reports",
+    "ViewPoint": {
+      "IsArchived": null,
+      "IsFavorited": null,
+      "IsRead": null
+    },
+    "AdditionalProperties": {}
+  },
+  {
+    "ActionRequiredByDateTime": null,
+    "Attachments": null,
+    "AttachmentsArchive": null,
+    "Body": {
+      "Content": "<p>Updated May 29, 2025: We have updated the timeline below. Thank you for your patience.\n</p><p>Microsoft Purview Communication Compliance is improving the capabilities and customization of policy alerts.</p><p>This message is associated with Microsoft 365 Roadmap ID <a href=\"https://www.microsoft.com/microsoft-365/roadmap?filters=&amp;searchterms=181825\" target=\"_blank\">181825</a>.</p><p>[When this will happen:]\n</p><p>Public Preview: We will begin rolling out mid-April 2025 (previously mid-January)) and expect to complete by late April 2025 (previously late February).\n</p><p>General Availability (Worldwide): We will begin rolling out mid-June 2025 (previously mid-May) and expect to complete by late June 2025 (previously late May).</p><p>[How this will affect your organization:]\n</p><p>Communication Compliance is improving the capabilities and customization of policy alerts. Admins will be able to customize the alert frequency per policy as well as adjust the email alerts frequency and recipients within the policy creation wizard by navigating to the new alerts page.</p><p>This new feature is available by default.</p><p>[What you need to do to prepare:]\n</p><p>Microsoft Purview Communication Compliance provides the tools to help organizations detect business conduct and regulatory compliance violations (e.g. SEC or FINRA), such as sensitive or confidential information, harassing or threatening language, and sharing of adult content. Usernames are pseudonymized by default, role-based access controls are built in, investigators are opted in by an admin, and audit logs are in place to help ensure user-level privacy.</p><p>You can access the Communication Compliance solution in the <a href=\"https://purview.microsoft.com/compliance\" target=\"_blank\">Microsoft Purview compliance portal.&nbsp;</a></p><p>Learn more:&nbsp;</p><p>•\t<a href=\"https://docs.microsoft.com/microsoft-365/compliance/communication-compliance?view=o365-worldwide\" target=\"_blank\">Learn about communication compliance&nbsp;</a></p><p>•\t<a href=\"https://learn.microsoft.com/purview/communication-compliance-policies?view=o365-worldwide#alert-policies\" target=\"_blank\">Create and manage communication compliance alert policies | Microsoft Learn</a></p>",
+      "ContentType": "html"
+    },
+    "Category": "stayInformed",
+    "Details": [
+      {
+        "Name": "RoadmapIds",
+        "Value": "181825"
+      },
+      {
+        "Name": "Summary",
+        "Value": "Microsoft Purview Communication Compliance is enhancing policy alerts' capabilities and customization. Public Preview will roll out from mid-April to late April 2025, and General Availability from mid-June to late June 2025. Admins can customize alert frequency and recipients within the policy creation wizard."
+      },
+      {
+        "Name": "Platforms",
+        "Value": "Web"
+      }
+    ],
+    "EndDateTime": "2025-07-07T07:00:00Z",
+    "HasAttachments": false,
+    "Id": "MC920304",
+    "IsMajorChange": false,
+    "LastModifiedDateTime": "2025-05-29T16:37:26.76Z",
+    "Services": [
+      "Microsoft Purview"
+    ],
+    "Severity": "normal",
+    "StartDateTime": "2024-10-28T22:51:49Z",
+    "Tags": [
+      "Updated message",
+      "New feature",
+      "Admin impact"
+    ],
+    "Title": "(Updated) Microsoft Purview | Communication Compliance: Policy alerts improvements",
     "ViewPoint": {
       "IsArchived": null,
       "IsFavorited": null,
@@ -9594,6 +9548,52 @@
       "Admin impact"
     ],
     "Title": "(Updated) Microsoft OneDrive: Update for unlicensed accounts",
+    "ViewPoint": {
+      "IsArchived": null,
+      "IsFavorited": null,
+      "IsRead": null
+    },
+    "AdditionalProperties": {}
+  },
+  {
+    "ActionRequiredByDateTime": null,
+    "Attachments": null,
+    "AttachmentsArchive": null,
+    "Body": {
+      "Content": "<p>Updated April 29, 2025: We have updated the timeline below. Thank you for your patience.</p><p>Coming soon: Users can share Microsoft Teams apps or agents from the app or agent profile and from the app side panel in Teams.\n</p><p>This message applies to Teams for Windows desktop, Teams for Mac desktop and Teams on the web.\n</p><p>A Microsoft 365 Copilot license is not required to share agents as described in this message. If a user has access to the agents, the users will be able to share them.</p><p>This message is associated with Microsoft 365 Roadmap ID <a href=\"https://www.microsoft.com/microsoft-365/roadmap?filters=&amp;searchterms=483355\" target=\"_blank\">483355</a>.\n</p><p>[When this will happen:]\n</p><p>Targeted Release: We will begin rolling out early June 2025 (previously early May) and expect to complete by mid-June 2025 (previously mid-May).\n</p><p>General Availability (Worldwide): We will begin rolling out mid-June 2025 (previously mid-May) and expect to complete by late June 2025 (previously late May).\n</p><p>[How this will affect your organization:]\n</p><p>After this rollout:\n</p><ul><li>Users can select the <i>Share </i>option when hovering on the app or agent icon in 1:1 chat mode with the app or agent.\n</li><li>After a user selects the <i>+Apps</i> icon from the three-dot menu in the top right of any chat, the user can right-click to share the app or agent.</li></ul><p>Share option from hovering on app/agent icon:\n</p><p><img src=\"https://cxcs.microsoft.net/file/ccp/en-us/8c967284-fc8a-4e09-a963-5136568596ad\" style=\"width: 400px;\" alt=\"user controls\">\n</p><p>Sharing from right panel:\n</p><p><img src=\"https://cxcs.microsoft.net/file/ccp/en-us/3b30533e-d6d9-41ff-b33b-164dc9962ee1\" style=\"width: 400px;\" alt=\"user controls\">\n</p><p>This change will be on by default.\n</p><p>[What you need to do to prepare:]\n</p><p>This rollout will happen automatically by the specified dates with no admin action required before the rollout. Review your current configuration to determine the impact for your organization. You may want to notify your users about this change and update any relevant documentation.</p>",
+      "ContentType": "html"
+    },
+    "Category": "stayInformed",
+    "Details": [
+      {
+        "Name": "RoadmapIds",
+        "Value": "483355"
+      },
+      {
+        "Name": "Summary",
+        "Value": "Users will soon be able to share Microsoft Teams apps and agents from their profile or the Teams side panel. The rollout begins in early June 2025 for Targeted Release and mid-June 2025 for General Availability. No Microsoft 365 Copilot license is required, and no admin action is needed."
+      },
+      {
+        "Name": "Platforms",
+        "Value": "Desktop, Mac, Web"
+      }
+    ],
+    "EndDateTime": "2025-08-04T07:00:00Z",
+    "HasAttachments": false,
+    "Id": "MC1037767",
+    "IsMajorChange": false,
+    "LastModifiedDateTime": "2025-04-29T14:21:45.687Z",
+    "Services": [
+      "Microsoft Teams"
+    ],
+    "Severity": "normal",
+    "StartDateTime": "2025-03-20T23:00:40Z",
+    "Tags": [
+      "Updated message",
+      "New feature",
+      "User impact"
+    ],
+    "Title": "(Updated) Microsoft Teams: Share Teams apps and agents from their profile or the Teams side panel",
     "ViewPoint": {
       "IsArchived": null,
       "IsFavorited": null,
