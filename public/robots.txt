@@ -1,14 +1,17 @@
 # Robots.txt for Microsoft 365 Message Center Viewer
 # https://message.cengizyilmaz.net/
 
+# Allow all crawlers
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /functions/
 
-# Sitemaps
+# Sitemap location
 Sitemap: https://message.cengizyilmaz.net/sitemap.xml
-Sitemap: https://message.cengizyilmaz.net/news-sitemap.xml
+
+# Disallow admin and private routes
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
 
 # Crawl-delay
 Crawl-delay: 10

@@ -149,6 +149,12 @@ const MessageDetail: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    // Remove statically injected source-info block if present
+    const sourceInfo = document.querySelector('.source-info');
+    if (sourceInfo) sourceInfo.remove();
+  }, []);
+
   if (!message) {
     return (
       <>

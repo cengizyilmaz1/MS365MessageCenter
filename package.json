@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && node scripts/generate-static-pages.js",
+    "build": "tsc && vite build && node scripts/generate-static-pages.js && node scripts/generate-sitemap.js",
     "preview": "vite preview",
     "serve": "node server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "copy-blog-posts": "node scripts/copy-blog-posts.js"
+    "copy-blog-posts": "node scripts/copy-blog-posts.js",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "date-fns": "^3.3.1",
