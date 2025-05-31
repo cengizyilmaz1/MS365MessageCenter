@@ -12,12 +12,13 @@ export function generateSlug(title: string): string {
 }
 
 /**
- * Generate a unique message ID from title and optional ID
+ * Generate a unique message ID - now using only ID for simplicity
  */
 export function generateMessageId(title: string, id?: string | number): string {
-  const slug = generateSlug(title);
+  // If we have an ID, use it directly
   if (id) {
-    return `${id}-${slug}`.substring(0, 100); // Limit length
+    return id.toString();
   }
-  return slug;
+  // Otherwise fall back to slug
+  return generateSlug(title);
 } 

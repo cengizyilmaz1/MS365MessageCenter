@@ -32,42 +32,42 @@
         line-height: 1.6;
         margin-bottom: 2rem;
       }
-      .button {
+      .spinner {
         display: inline-block;
-        padding: 0.8rem 1.5rem;
-        background-color: #0078d4;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        transition: background-color 0.2s;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(0, 120, 212, 0.3);
+        border-top: 3px solid #0078d4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
       }
-      .button:hover {
-        background-color: #106ebe;
-      }
-      @media (prefers-color-scheme: dark) {
-        body {
-          background-color: #1f1f1f;
-          color: #fff;
-        }
-        .button {
-          background-color: #2b88d8;
-        }
-        .button:hover {
-          background-color: #3b98e8;
-        }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
     </style>
     <script>
-      // Store the attempted URL
-      sessionStorage.setItem('redirectPath', window.location.pathname);
-      // Redirect to the main app
-      window.location.href = '/';
+      // This script handles client-side routing for GitHub Pages
+      // It stores the current path and redirects to the root with the path saved
+      (function() {
+        const path = window.location.pathname;
+        const search = window.location.search;
+        const hash = window.location.hash;
+        
+        // Store the full path
+        const fullPath = path + search + hash;
+        sessionStorage.setItem('redirectPath', fullPath);
+        
+        // Redirect to root
+        window.location.replace('/');
+      })();
     </script>
   </head>
   <body>
     <div class="container">
-      <h1>Page Not Found</h1>
-      <p>Redirecting to home page...</p>
+      <div class="spinner"></div>
+      <h1>Loading...</h1>
+      <p>Redirecting to the requested page...</p>
     </div>
   </body>
 </html> 

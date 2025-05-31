@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import StructuredData from '../components/StructuredData';
 import { useAnalytics } from '../hooks/useAnalytics';
-import { generateMessageId } from '../utils/slug';
+import { generateMessageId, generateSlug } from '../utils/slug';
 
 // Map actual values to our enums
 const mapSeverity = (severity: string): MessageSeverity => {
@@ -46,25 +46,36 @@ const getLatestCsvUrl = async (): Promise<string | null> => {
 const MessageDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { messages, markAsRead } = useMessages();
+  const { messages, loading, markAsRead } = useMessages();
   const [copiedLink, setCopiedLink] = useState(false);
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [selectedPosts, setSelectedPosts] = useState<BlogPost[]>([]);
   const { trackMessageView, trackExternalLink } = useAnalytics();
 
-  // Find message by slug-based ID
+  // Find message by ID
   const message = messages.find((msg) => {
-    const title = msg.title || msg.Title || '';
     const msgId = msg.id || msg.Id || '';
-    const messageSlugId = generateMessageId(title, msgId.toString());
-    return messageSlugId === id;
+    
+    // Direct ID match
+    if (msgId && msgId.toString() === id) {
+      return true;
+    }
+    
+    // If no ID, try title slug match
+    if (!msgId) {
+      const title = msg.title || msg.Title || '';
+      const titleSlug = generateSlug(title);
+      if (titleSlug === id) {
+        return true;
+      }
+    }
+    
+    return false;
   });
 
   useEffect(() => {
     if (message && !message.isRead) {
       const messageId = message.id || message.Id;
       if (messageId) {
-        markAsRead(messageId);
+        markAsRead(messageId.toString());
       }
     }
     
@@ -75,58 +86,6 @@ const MessageDetail: React.FC = () => {
       trackMessageView(messageId.toString(), messageTitle);
     }
   }, [message, markAsRead, trackMessageView]);
-
-  // Deterministic shuffle for each message
-  function seededShuffle<T>(array: T[], seed: string): T[] {
-    let arr = [...array];
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) {
-      hash = ((hash << 5) - hash) + seed.charCodeAt(i);
-      hash |= 0;
-    }
-    for (let i = arr.length - 1; i > 0; i--) {
-      hash = (hash * 9301 + 49297) % 233280;
-      const j = Math.abs(hash) % (i + 1);
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
-
-  // Load blog posts from CSV
-  useEffect(() => {
-    const loadBlogPosts = async () => {
-      try {
-        console.log('Blog posts loading...');
-        const csvUrl = '/data/CengizYILMAZBlogPost_latest.csv';
-        const response = await fetch(csvUrl);
-        console.log('Fetch response:', response);
-        const csvText = await response.text();
-        console.log('CSV text:', csvText);
-        const posts = csvText
-          .split('\n')
-          .slice(1) // Skip header
-          .filter(line => line.trim())
-          .map(line => {
-            const match = line.match(/^"(.+?)","(.+?)","(.+?)"[\r\n]*$/);
-            if (!match) return null;
-            const [, Title, URL, Date] = match;
-            return { Title, URL, Date };
-          });
-        const validPosts = posts.filter((p): p is BlogPost => p !== null);
-        setBlogPosts(validPosts);
-        // Deterministic selection: use messageId as seed
-        if (message && validPosts.length > 0) {
-          const messageId = (message.id || message.Id || message.title || message.Title || '').toString();
-          const shuffled = seededShuffle(validPosts, messageId);
-          setSelectedPosts(shuffled.slice(0, 3));
-        }
-      } catch (error) {
-        console.error('Error loading blog posts:', error);
-      }
-    };
-    loadBlogPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [message]);
 
   const handleCopyLink = () => {
     const currentUrl = window.location.href;
@@ -146,7 +105,7 @@ const MessageDetail: React.FC = () => {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        console.log('Error sharing:', err);
+        // Silently handle error
       }
     } else {
       // Fallback to copy link
@@ -154,11 +113,20 @@ const MessageDetail: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    // Remove statically injected source-info block if present
-    const sourceInfo = document.querySelector('.source-info');
-    if (sourceInfo) sourceInfo.remove();
-  }, []);
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!message) {
     return (
@@ -744,36 +712,6 @@ const MessageDetail: React.FC = () => {
                       >
                         {tag}
                       </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Related Blog Posts */}
-              {selectedPosts.length > 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Recent Posts</h2>
-                  <div className="space-y-4">
-                    {selectedPosts.map((post, index) => (
-                      <a
-                        key={index}
-                        href={post.URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label={`Blog post: ${decodeHtmlEntities(post.Title)}`}
-                      >
-                        <h4 className="text-base font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
-                          {decodeHtmlEntities(post.Title)}
-                        </h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(post.Date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                          })}
-                        </p>
-                      </a>
                     ))}
                   </div>
                 </div>
