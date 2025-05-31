@@ -35,7 +35,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onMarkAsRead }) => {
 
   const getMessageUrl = () => {
     const title = message.title || message.Title || '';
-    // Always use title slug for better SEO and readability
+    // Generate URL using title slug for better SEO
     return `/message/${generateSlug(title)}`;
   };
 

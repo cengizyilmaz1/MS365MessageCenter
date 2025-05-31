@@ -862,13 +862,13 @@ const MessageDetail: React.FC = () => {
                     <div className="flex items-start gap-3">
                       <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-[80px]">URL:</span>
                       <a 
-                        href={`https://admin.microsoft.com/Adminportal/Home#/MessageCenter/${extractedDetails.messageId}`}
+                        href={`https://admin.microsoft.com/Adminportal/Home#/MessageCenter/${message.id || message.Id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1 group"
-                        onClick={() => trackExternalLink('Microsoft Admin Center', `Message ${extractedDetails.messageId}`)}
+                        onClick={() => trackExternalLink('Microsoft Admin Center', `Message ${message.id || message.Id}`)}
                       >
-                        Admin Center
+                        View in Admin Center
                         <ExternalLink className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
                       </a>
                     </div>

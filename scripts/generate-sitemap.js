@@ -21,16 +21,6 @@ function generateSlug(title) {
     .replace(/^-+|-+$/g, '');
 }
 
-// Generate message ID - matching the logic in src/utils/slug.ts
-function generateMessageId(title, id) {
-  // If we have an ID, use it directly (matching the updated logic)
-  if (id) {
-    return id.toString();
-  }
-  // Otherwise fall back to slug
-  return generateSlug(title);
-}
-
 // Generate sitemap XML
 async function generateSitemap() {
   const today = new Date().toISOString().split('T')[0];
@@ -90,8 +80,9 @@ async function generateSitemap() {
       
       messageUrls = messagesData.map(msg => {
         const title = msg.Title || msg.title || '';
+        const id = msg.Id || msg.id || '';
         
-        // Always use title slug for better SEO and readability
+        // Generate URL using both ID and title slug for better SEO
         const messageSlug = generateSlug(title);
         const messageUrl = `${BASE_URL}/message/${messageSlug}`;
         
