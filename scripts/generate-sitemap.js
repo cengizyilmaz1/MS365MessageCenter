@@ -1,15 +1,19 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import glob from 'glob';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const BASE_URL = 'https://message.cengizyilmaz.net';
 const PUBLIC_DIR = path.join(__dirname, '../public');
 
 // Get all message files
-const messageFiles = glob.sync(path.join(__dirname, '../data/messages/*.json'));
+const messageFiles = await glob.glob(path.join(__dirname, '../data/messages/*.json'));
 
 // Generate sitemap XML
-function generateSitemap() {
+async function generateSitemap() {
   const today = new Date().toISOString().split('T')[0];
   
   const urls = [
@@ -46,8 +50,8 @@ function generateSitemap() {
   ];
 
   // Add message URLs
-  messageFiles.forEach(file => {
-    const messageData = JSON.parse(fs.readFileSync(file, 'utf8'));
+  for (const file of messageFiles) {
+    const messageData = JSON.parse(await fs.promises.readFile(file, 'utf8'));
     const messageId = path.basename(file, '.json');
     urls.push({
       loc: `${BASE_URL}/message/${messageId}`,
@@ -55,7 +59,7 @@ function generateSitemap() {
       changefreq: 'weekly',
       priority: '0.7'
     });
-  });
+  }
 
   // Generate XML
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -70,8 +74,9 @@ function generateSitemap() {
 </urlset>`;
 
   // Write sitemap
-  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), xml);
+  await fs.promises.writeFile(path.join(PUBLIC_DIR, 'sitemap.xml'), xml);
   console.log('Sitemap generated successfully!');
 }
 
-generateSitemap(); 
+// Run the generator
+generateSitemap().catch(console.error); 
