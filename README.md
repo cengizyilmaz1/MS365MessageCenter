@@ -55,6 +55,41 @@ npm run dev
 npm run build
 ```
 
+## Deployment
+
+### GitHub Pages Deployment
+
+This project is configured for GitHub Pages deployment with custom domain support.
+
+1. **Build the project**:
+```bash
+npm run build
+```
+
+2. **Deploy to GitHub Pages**:
+```bash
+npm run deploy
+```
+
+3. **GitHub Repository Settings**:
+- Go to Settings > Pages
+- Source: Deploy from a branch
+- Branch: gh-pages / (root)
+- Custom domain: message.cengizyilmaz.net (if using)
+
+4. **Important Files**:
+- `404.html`: Handles SPA routing on GitHub Pages
+- `.nojekyll`: Prevents Jekyll processing
+- `CNAME`: Contains custom domain (auto-generated)
+
+### Manual Deployment
+
+If you prefer manual deployment:
+
+1. Build the project: `npm run build`
+2. The `dist` folder contains all files ready for deployment
+3. Upload the contents of `dist` to your web server
+
 ## Project Structure
 
 ```
@@ -68,6 +103,8 @@ npm run build
 │   ├── services/       # API services
 │   └── config/         # Configuration files
 ├── scripts/            # Build scripts
+│   ├── generate-sitemap.js  # Dynamic sitemap generation
+│   └── post-build.js        # Post-build tasks
 └── data/               # Data files
 ```
 
@@ -90,6 +127,23 @@ npm run build
 - Open Graph tags
 - Twitter Card support
 - Canonical URLs
+
+## Troubleshooting
+
+### Messages Not Loading
+- Ensure `messages.json` exists in the public folder
+- Check browser console for errors
+- Verify the JSON format is correct
+
+### 404 Errors on GitHub Pages
+- Make sure `404.html` is in the dist folder
+- The `.nojekyll` file must be present
+- Wait a few minutes for GitHub Pages to update
+
+### Custom Domain Issues
+- Add CNAME record pointing to `[username].github.io`
+- Enable HTTPS in GitHub Pages settings
+- Clear browser cache after DNS propagation
 
 ## Contributing
 

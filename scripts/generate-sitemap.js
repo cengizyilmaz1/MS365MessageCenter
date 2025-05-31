@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const BASE_URL = 'https://message.cengizyilmaz.net';
 const PUBLIC_DIR = path.join(__dirname, '../public');
+const DIST_DIR = path.join(__dirname, '../dist');
 
 // Generate slug from title
 function generateSlug(title) {
@@ -66,21 +67,36 @@ async function generateSitemap() {
     }
   ];
 
-  // Try to read messages from public directory
+  // Try to read messages from public directory first, then dist
   let messageUrls = [];
   try {
-    const messagesPath = path.join(PUBLIC_DIR, 'messages.json');
+    // Try dist directory first (after build)
+    let messagesPath = path.join(DIST_DIR, 'messages.json');
+    if (!fs.existsSync(messagesPath)) {
+      // Fallback to public directory
+      messagesPath = path.join(PUBLIC_DIR, 'messages.json');
+    }
+    
     if (fs.existsSync(messagesPath)) {
       const messagesData = JSON.parse(await fs.promises.readFile(messagesPath, 'utf8'));
       
       messageUrls = messagesData.map(msg => {
         const title = msg.Title || msg.title || '';
         const id = msg.Id || msg.id || '';
-        const messageSlugId = generateMessageId(title, id.toString());
+        
+        // Use only ID if available
+        let messageUrl;
+        if (id) {
+          messageUrl = `${BASE_URL}/message/${id}`;
+        } else {
+          // Fallback to title slug
+          messageUrl = `${BASE_URL}/message/${generateSlug(title)}`;
+        }
+        
         const lastMod = msg.LastModifiedDateTime || msg.lastModifiedDate || msg.StartDateTime || msg.publishedDate || today;
         
         return {
-          loc: `${BASE_URL}/message/${messageSlugId}`,
+          loc: messageUrl,
           lastmod: new Date(lastMod).toISOString().split('T')[0],
           changefreq: 'weekly',
           priority: '0.7'
@@ -106,9 +122,19 @@ async function generateSitemap() {
   </url>`).join('')}
 </urlset>`;
 
-  // Write sitemap
-  await fs.promises.writeFile(path.join(PUBLIC_DIR, 'sitemap.xml'), xml);
-  console.log(`Sitemap generated successfully with ${allUrls.length} URLs!`);
+  // Write sitemap to both public and dist directories
+  const publicSitemapPath = path.join(PUBLIC_DIR, 'sitemap.xml');
+  const distSitemapPath = path.join(DIST_DIR, 'sitemap.xml');
+  
+  await fs.promises.writeFile(publicSitemapPath, xml);
+  console.log(`✓ Sitemap written to public folder`);
+  
+  if (fs.existsSync(DIST_DIR)) {
+    await fs.promises.writeFile(distSitemapPath, xml);
+    console.log(`✓ Sitemap written to dist folder`);
+  }
+  
+  console.log(`✓ Sitemap generated with ${allUrls.length} URLs!`);
 }
 
 // Run the generator

@@ -30,15 +30,28 @@ function AppWithAnalytics() {
   const location = useLocation();
 
   useEffect(() => {
-    // Check if we have a redirect path from 404.html
+    // Handle GitHub Pages SPA redirect
+    if (location.search) {
+      const searchParams = new URLSearchParams(location.search);
+      const redirect = searchParams.get('/');
+      
+      if (redirect) {
+        // Remove the ?/ from the beginning and restore the path
+        const path = redirect.replace(/~and~/g, '&');
+        navigate(path + location.hash, { replace: true });
+        return;
+      }
+    }
+    
+    // Check if we have a redirect path from 404.html (old method)
     const redirectPath = sessionStorage.getItem('redirectPath');
     if (redirectPath) {
       // Clear the redirect path
       sessionStorage.removeItem('redirectPath');
       // Navigate to the stored path
-      navigate(redirectPath);
+      navigate(redirectPath, { replace: true });
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
   // Track page views
   useAnalytics();

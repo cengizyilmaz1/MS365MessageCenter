@@ -50,22 +50,26 @@ const MessageDetail: React.FC = () => {
   const [copiedLink, setCopiedLink] = useState(false);
   const { trackMessageView, trackExternalLink } = useAnalytics();
 
-  // Find message by ID
+  // Find message by ID or slug
   const message = messages.find((msg) => {
     const msgId = msg.id || msg.Id || '';
+    const title = msg.title || msg.Title || '';
     
     // Direct ID match
     if (msgId && msgId.toString() === id) {
       return true;
     }
     
-    // If no ID, try title slug match
-    if (!msgId) {
-      const title = msg.title || msg.Title || '';
-      const titleSlug = generateSlug(title);
-      if (titleSlug === id) {
-        return true;
-      }
+    // Generate slug from title and compare
+    const titleSlug = generateMessageId(title);
+    if (titleSlug === id) {
+      return true;
+    }
+    
+    // Also try with just generateSlug for backwards compatibility
+    const simpleSlug = generateSlug(title);
+    if (simpleSlug === id) {
+      return true;
     }
     
     return false;
