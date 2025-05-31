@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background Circle -->
-  <circle cx="256" cy="256" r="256" fill="#0078D4"/>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9333ea;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
   
-  <!-- Message Icon -->
-  <path d="M384 160H128C110.3 160 96 174.3 96 192V320C96 337.7 110.3 352 128 352H384C401.7 352 416 337.7 416 320V192C416 174.3 401.7 160 384 160Z" fill="white"/>
+  <rect x="10" y="10" width="80" height="80" rx="20" fill="url(#gradient)" filter="url(#shadow)"/>
   
-  <!-- Message Lines -->
-  <rect x="144" y="208" width="224" height="16" rx="8" fill="#0078D4"/>
-  <rect x="144" y="240" width="160" height="16" rx="8" fill="#0078D4"/>
-  <rect x="144" y="272" width="192" height="16" rx="8" fill="#0078D4"/>
-  
-  <!-- Notification Dot -->
-  <circle cx="352" cy="192" r="16" fill="#FF4B4B"/>
+  <g transform="translate(50, 50)">
+    <rect x="-20" y="-15" width="40" height="5" rx="2.5" fill="white" opacity="0.95"/>
+    <rect x="-20" y="-5" width="30" height="5" rx="2.5" fill="white" opacity="0.85"/>
+    <rect x="-20" y="5" width="35" height="5" rx="2.5" fill="white" opacity="0.75"/>
+    <rect x="-20" y="15" width="25" height="5" rx="2.5" fill="white" opacity="0.65"/>
+  </g>
 </svg> 

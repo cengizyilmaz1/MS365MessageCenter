@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useMessages } from '../hooks/useMessages';
-import { Loader, AlertTriangle, Search, Bell, Calendar, Tag, ChevronDown, ChevronUp, ExternalLink, Layers, Clock, AlertCircle, CheckCircle, MessageSquare, TrendingUp, ArrowRight, ChevronLeft, ChevronRight, Download, Hash } from 'lucide-react';
+import { Loader, AlertTriangle, Search, Bell, Calendar, Tag, ChevronDown, ChevronUp, ExternalLink, Layers, Clock, AlertCircle, CheckCircle, MessageSquare, TrendingUp, ArrowRight, ChevronLeft, ChevronRight, Download, Hash, Filter, Activity, BarChart3, Zap, Sparkles, ArrowUpRight, FileText, Eye } from 'lucide-react';
 import { MessageSeverity, MessageCategory } from '../types';
 import { Link } from 'react-router-dom';
 import MessageFilter from '../components/MessageFilter';
 import SEO from '../components/SEO';
-import { downloadSitemap } from '../utils/generateSitemap';
+import { generateSlug } from '../utils/slug';
 
 const Dashboard: React.FC = () => {
   const { messages, filteredMessages, loading, error, markAsRead, filter, updateFilter, availableServices } = useMessages();
@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
   
   // Pagination state - moved up before any returns
   const [currentPage, setCurrentPage] = useState(1);
-  const messagesPerPage = 12;
+  const messagesPerPage = 20;
 
   // Map severity helper (same as in MessageDetail)
   const mapSeverity = (severity: string | undefined): MessageSeverity => {
@@ -82,7 +82,7 @@ const Dashboard: React.FC = () => {
 
   const getMessageUrl = (title: string | undefined) => {
     if (!title) return '/';
-    return `/message/${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    return `/message/${generateSlug(title)}`;
   };
 
   const toggleSort = (field: 'date' | 'severity' | 'service') => {
@@ -213,58 +213,124 @@ const Dashboard: React.FC = () => {
         keywords={['Microsoft 365', 'Message Center', 'Dashboard', 'Service Updates']}
       />
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="container mx-auto px-4 py-8 max-w-screen-2xl">
           {/* Header Section */}
-          <div className="mb-8 animate-fade-in">
-            <h1 className="text-4xl font-bold text-primary mb-4">
-              Microsoft 365 Message Center
+          <div className="mb-10">
+            <div className="relative">
+              {/* Background decoration */}
+              <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+                <div className="absolute top-0 right-1/4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+                <div className="absolute bottom-0 left-1/2 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+              </div>
+              
+              <div className="relative">
+                <div className="text-center mb-4">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full text-sm font-medium text-blue-700 dark:text-blue-300 mb-4">
+                    <Sparkles className="h-4 w-4" />
+                    Microsoft 365 Updates Hub
+                  </div>
+                </div>
+                <h1 className="text-6xl font-black text-center mb-4">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400">
+                    Message Center
+                  </span>
             </h1>
-            <p className="text-lg text-secondary">
-              Stay updated with all service announcements and changes
-            </p>
-          </div>
-
-          {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-tertiary">Total Messages</p>
-                  <p className="text-2xl font-bold text-primary">{filteredMessages.length.toLocaleString()}</p>
-                </div>
-                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <MessageSquare className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.1s'}}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-tertiary">Major Changes</p>
-                  <p className="text-2xl font-bold text-primary">{highPriorityCount.toLocaleString()}</p>
-                </div>
-                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                  <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 animate-slide-up" style={{animationDelay: '0.2s'}}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-tertiary">Action Required</p>
-                  <p className="text-2xl font-bold text-primary">{actionRequiredCount.toLocaleString()}</p>
-                </div>
-                <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-                  <AlertCircle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-                </div>
+                <p className="text-xl text-center text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                  Track the latest updates, features, and announcements for Microsoft 365 services
+                </p>
+                
+                {lastUpdateDate && (
+                  <div className="mt-6 text-center">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Last sync: {new Date(lastUpdateDate).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Filter and Search Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 animate-scale-in">
+          {/* Enhanced Stats Section with Glassmorphism */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            {/* Total Messages Card */}
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 ring-1 ring-gray-900/5 dark:ring-white/10 backdrop-blur">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2.5 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-lg">
+                    <MessageSquare className="h-6 w-6 text-white" />
+                </div>
+                  <span className="flex items-center text-sm font-medium text-green-600 dark:text-green-400">
+                    <Activity className="h-4 w-4 mr-1" />
+                    Active
+                  </span>
+                </div>
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Messages</h3>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
+                  {filteredMessages.length.toLocaleString()}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  All available updates
+                </p>
+              </div>
+            </div>
+
+            {/* Major Changes Card */}
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 ring-1 ring-gray-900/5 dark:ring-white/10 backdrop-blur">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2.5 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl shadow-lg">
+                    <AlertTriangle className="h-6 w-6 text-white" />
+                </div>
+                  <span className="flex items-center text-sm font-medium text-orange-600 dark:text-orange-400">
+                    <Activity className="h-4 w-4 mr-1" />
+                    Critical
+                  </span>
+                </div>
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Major Changes</h3>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
+                  {majorChanges.length.toLocaleString()}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  {highPriorityCount} high priority
+                </p>
+              </div>
+            </div>
+
+            {/* Action Required Card */}
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 ring-1 ring-gray-900/5 dark:ring-white/10 backdrop-blur">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2.5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-lg">
+                    <Zap className="h-6 w-6 text-white" />
+                </div>
+                  <span className="flex items-center text-sm font-medium text-purple-600 dark:text-purple-400">
+                    <Clock className="h-4 w-4 mr-1" />
+                    Urgent
+                  </span>
+                </div>
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Action Required</h3>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
+                  {actionRequiredCount.toLocaleString()}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  Needs immediate attention
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Filter Section with Modern Design */}
+          <div className="mb-8">
             <MessageFilter 
               filter={filter}
               onFilterChange={updateFilter}
@@ -272,73 +338,124 @@ const Dashboard: React.FC = () => {
             />
           </div>
 
-          {/* Messages Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {/* Messages Table with Modern Design */}
+          <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-900/50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Latest Updates</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {currentMessages.length} of {filteredMessages.length} messages displayed
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1.5 text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg">
+                    Live
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200/50 dark:border-gray-700/50">
+                    <th className="px-6 py-4 text-left">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                        <FileText className="h-4 w-4" />
+                        Message Details
+                      </div>
+                    </th>
+                    <th className="px-6 py-4 text-left">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                        <Layers className="h-4 w-4" />
+                        Service
+                      </div>
+                    </th>
+                    <th className="px-6 py-4 text-left">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                        <AlertCircle className="h-4 w-4" />
+                        Priority
+                      </div>
+                    </th>
+                    <th className="px-6 py-4 text-left">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                        <Calendar className="h-4 w-4" />
+                        Published
+                      </div>
+                    </th>
+                    <th className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                        <Eye className="h-4 w-4" />
+                        View
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200/30 dark:divide-gray-700/30">
             {currentMessages.map((message, index) => {
               const messageTitle = message.title || message.Title || 'Untitled Message';
               const messageId = message.id || message.Id || `msg-${index}`;
-              const isRead = message.isRead || false;
+                    const severity = message.severity || mapSeverity(message.Severity) || MessageSeverity.INFORMATIONAL;
 
               return (
-                <div
+                      <tr 
                   key={messageId}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover animate-fade-in"
-                  style={{animationDelay: `${index * 0.05}s`}}
-                >
-                  {/* Priority indicators */}
+                        className="group hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-purple-50/50 dark:hover:from-blue-900/10 dark:hover:to-purple-900/10 transition-all duration-200"
+                      >
+                        <td className="px-6 py-5">
+                          <div className="space-y-1">
+                            <Link 
+                              to={getMessageUrl(messageTitle) || '/'}
+                              className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors cursor-pointer hover:underline block"
+                            >
+                              {messageTitle}
+                            </Link>
+                            <div className="flex items-center gap-3">
+                              <p className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+                                #{messageId}
+                              </p>
                   {(isMajorChange(message) || isActionRequired(message)) && (
-                    <div className="flex gap-2 mb-4">
+                                <div className="flex items-center gap-2">
                       {isMajorChange(message) && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400">
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 text-orange-700 dark:text-orange-400">
                           <AlertCircle className="h-3 w-3" />
-                          Major Change
+                                      Major
                         </span>
                       )}
                       {isActionRequired(message) && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">
-                          <AlertTriangle className="h-3 w-3" />
-                          Action Required
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-700 dark:text-purple-400">
+                                      <Zap className="h-3 w-3" />
+                                      Action
                         </span>
                       )}
                     </div>
                   )}
-
-                  {/* Message Header */}
-                  <div className="mb-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-lg font-semibold text-primary line-clamp-2 flex-1">
-                        {messageTitle}
-                      </h3>
-                      {!isRead && (
-                        <span className="ml-2 flex h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-400" />
-                      )}
-                    </div>
-                    
-                    {/* Message ID */}
-                    <div className="flex items-center gap-2 text-sm text-tertiary">
-                      <Hash className="h-4 w-4" />
-                      <span className="font-mono">{messageId}</span>
                     </div>
                   </div>
-
-                  {/* Service and Severity */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                      <Layers className="h-3 w-3" />
+                        </td>
+                        <td className="px-6 py-5">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 text-blue-700 dark:text-blue-400 shadow-sm">
+                            <Layers className="h-3.5 w-3.5" />
                       {message.service || message.Services?.[0] || 'Microsoft 365'}
                     </span>
-                    {getSeverityBadge(message.severity || MessageSeverity.INFORMATIONAL)}
+                        </td>
+                        <td className="px-6 py-5">
+                          <div className={`inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-xl shadow-sm ${
+                            severity === MessageSeverity.HIGH 
+                              ? 'bg-gradient-to-r from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-700 dark:text-red-400'
+                              : severity === MessageSeverity.MEDIUM
+                              ? 'bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-400'
+                              : severity === MessageSeverity.LOW
+                              ? 'bg-gradient-to-r from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 text-emerald-700 dark:text-emerald-400'
+                              : 'bg-gradient-to-r from-gray-100 to-slate-100 dark:from-gray-900/30 dark:to-slate-900/30 text-gray-700 dark:text-gray-400'
+                          }`}>
+                            {severity}
                   </div>
-
-                  {/* Summary */}
-                  <p className="text-sm text-secondary line-clamp-3 mb-4">
-                    {message.summary || 'No summary available'}
-                  </p>
-
-                  {/* Published Date */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-tertiary">
-                      <Calendar className="h-4 w-4" />
+                        </td>
+                        <td className="px-6 py-5">
+                          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <Calendar className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                       <span>
                         {(message.publishedDate || message.StartDateTime) ? 
                           new Date(message.publishedDate || message.StartDateTime || '').toLocaleDateString('en-US', {
@@ -349,62 +466,74 @@ const Dashboard: React.FC = () => {
                         }
                       </span>
                     </div>
-                    
+                        </td>
+                        <td className="px-6 py-5 text-center">
                     <Link
                       to={getMessageUrl(messageTitle) || '/'}
-                      className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg transition-colors"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 group"
                     >
-                      View Details
-                      <ArrowRight className="h-4 w-4" />
+                            Details
+                            <ArrowUpRight className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </Link>
-                  </div>
-                </div>
+                        </td>
+                      </tr>
               );
             })}
+                </tbody>
+              </table>
           </div>
 
           {/* Empty State */}
           {currentMessages.length === 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-12 text-center animate-fade-in">
-              <MessageSquare className="h-16 w-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-primary mb-2">No messages found</h3>
-              <p className="text-secondary">Try adjusting your filters or search criteria</p>
+              <div className="p-16 text-center">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full mb-6">
+                  <MessageSquare className="h-10 w-10 text-gray-400 dark:text-gray-500" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No messages found</h3>
+                <p className="text-gray-600 dark:text-gray-400 max-w-sm mx-auto">
+                  Try adjusting your filters or search criteria to find what you're looking for.
+                </p>
             </div>
           )}
+          </div>
 
-          {/* Pagination */}
+          {/* Modern Pagination */}
           {totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-center gap-2">
+            <div className="mt-10 flex items-center justify-center">
+              <nav className="flex items-center gap-2" aria-label="Pagination">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-shadow"
+                  className="relative inline-flex items-center p-2 text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+                  aria-label="Previous page"
               >
-                <ChevronLeft className="h-5 w-5 text-primary" />
+                  <ChevronLeft className="h-5 w-5" />
               </button>
               
-              <div className="flex items-center gap-2">
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
                   let pageNum;
-                  if (totalPages <= 5) {
+                    if (totalPages <= 7) {
                     pageNum = i + 1;
-                  } else if (currentPage <= 3) {
+                    } else if (currentPage <= 4) {
                     pageNum = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
+                    } else if (currentPage >= totalPages - 3) {
+                      pageNum = totalPages - 6 + i;
                   } else {
-                    pageNum = currentPage - 2 + i;
+                      pageNum = currentPage - 3 + i;
                   }
                   
                   return (
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`w-10 h-10 rounded-lg font-medium transition-all ${
+                        className={`relative inline-flex items-center justify-center w-10 h-10 text-sm font-medium rounded-xl transition-all duration-200 ${
                         currentPage === pageNum
-                          ? 'bg-blue-600 text-white shadow-lg'
-                          : 'bg-white dark:bg-gray-800 text-primary shadow-md hover:shadow-lg'
+                            ? 'text-white bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg hover:shadow-xl'
+                            : 'text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm'
                       }`}
+                        aria-label={`Go to page ${pageNum}`}
+                        aria-current={currentPage === pageNum ? 'page' : undefined}
                     >
                       {pageNum}
                     </button>
@@ -415,23 +544,14 @@ const Dashboard: React.FC = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-shadow"
+                  className="relative inline-flex items-center p-2 text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+                  aria-label="Next page"
               >
-                <ChevronRight className="h-5 w-5 text-primary" />
+                  <ChevronRight className="h-5 w-5" />
               </button>
+              </nav>
             </div>
           )}
-
-          {/* Sitemap Download */}
-          <div className="mt-8 flex justify-center">
-            <button
-              onClick={() => downloadSitemap(messages)}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shadow-md"
-            >
-              <Download className="h-5 w-5" />
-              Download Sitemap
-            </button>
-          </div>
         </div>
       </div>
     </>

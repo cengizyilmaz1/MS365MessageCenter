@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 const BASE_URL = 'https://message.cengizyilmaz.net';
 const PUBLIC_DIR = path.join(__dirname, '../public');
 const DIST_DIR = path.join(__dirname, '../dist');
+const DATA_DIR = path.join(__dirname, '../@data');
 
 // Generate slug from title
 function generateSlug(title) {
@@ -68,13 +69,19 @@ async function generateSitemap() {
     }
   ];
 
-  // Try to read messages from public directory first, then dist
+  // Try to read messages from @data directory
   let messageUrls = [];
   try {
-    // Try dist directory first (after build)
-    let messagesPath = path.join(DIST_DIR, 'messages.json');
+    // Try @data directory first
+    let messagesPath = path.join(DATA_DIR, 'messages.json');
+    
+    // Fallback to dist directory
     if (!fs.existsSync(messagesPath)) {
-      // Fallback to public directory
+      messagesPath = path.join(DIST_DIR, '@data', 'messages.json');
+    }
+    
+    // Fallback to public directory
+    if (!fs.existsSync(messagesPath)) {
       messagesPath = path.join(PUBLIC_DIR, 'messages.json');
     }
     
@@ -84,7 +91,7 @@ async function generateSitemap() {
       messageUrls = messagesData.map(msg => {
         const title = msg.Title || msg.title || '';
         
-        // Always use title slug for URLs (matching MessageCard)
+        // Always use title slug for URLs (matching MessageCard and MessageDetail)
         const messageSlug = generateSlug(title);
         const messageUrl = `${BASE_URL}/message/${messageSlug}`;
         
@@ -97,6 +104,8 @@ async function generateSitemap() {
           priority: '0.7'
         };
       });
+      
+      console.log(`✓ Generated ${messageUrls.length} message URLs`);
     }
   } catch (error) {
     console.warn('Could not read messages.json:', error);
@@ -108,13 +117,12 @@ async function generateSitemap() {
   // Generate XML
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${allUrls.map(url => `
-  <url>
+  ${allUrls.map(url => `<url>
     <loc>${url.loc}</loc>
     <lastmod>${url.lastmod}</lastmod>
     <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority}</priority>
-  </url>`).join('')}
+  </url>`).join('\n  ')}
 </urlset>`;
 
   // Write sitemap to both public and dist directories
