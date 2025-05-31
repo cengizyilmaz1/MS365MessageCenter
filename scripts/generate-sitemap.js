@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateMessageId } from '../src/utils/slug';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,18 +21,6 @@ function generateSlug(title) {
   if (!title) return '';
   const cleaned = cleanTitle(title);
   return cleaned
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-// Generate message ID from title (same as in MessageDetail.tsx)
-function generateMessageId(title) {
-  if (!title) return '';
-  return title
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9\s-]/g, '')
@@ -113,7 +102,7 @@ async function generateSitemap() {
         .map(msg => {
           const title = msg.Title || msg.title || '';
           const id = msg.Id || msg.id || '';
-          const messageId = generateSlug(title);
+          const messageId = generateMessageId(title);
           
           // Skip if no valid ID could be generated
           if (!messageId) {
