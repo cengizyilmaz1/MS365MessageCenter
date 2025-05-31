@@ -3,6 +3,7 @@ import { MessageCategory, MessageSeverity, Message } from '../types';
 import { format, parseISO } from 'date-fns';
 import { AlertTriangle, Info, Clock, Wrench, Shield, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { generateMessageId } from '../utils/slug';
 
 interface MessageCardProps {
   message: Message;
@@ -11,8 +12,9 @@ interface MessageCardProps {
 
 const MessageCard: React.FC<MessageCardProps> = ({ message, onMarkAsRead }) => {
   const handleClick = () => {
-    if (!message.isRead) {
-      onMarkAsRead(message.id);
+    const messageId = message.id || message.Id;
+    if (!message.isRead && messageId) {
+      onMarkAsRead(messageId.toString());
     }
   };
 
@@ -31,13 +33,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onMarkAsRead }) => {
     }
   };
 
-  const getMessageUrl = (title: string) => {
-    return `/message/${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  const getMessageUrl = () => {
+    const title = message.title || message.Title || '';
+    const id = message.id || message.Id || '';
+    return `/message/${generateMessageId(title, id.toString())}`;
   };
 
   return (
     <Link 
-      to={getMessageUrl(message.title)}
+      to={getMessageUrl()}
       onClick={handleClick}
       className={`block bg-white dark:bg-gray-800 rounded-xl border ${
         message.isRead 
@@ -49,24 +53,24 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onMarkAsRead }) => {
         <div className="flex items-start justify-between">
           <div className="flex items-start space-x-4">
             <div className="mt-1">
-              {getCategoryIcon(message.category)}
+              {getCategoryIcon(message.category || MessageCategory.ANNOUNCEMENT)}
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                {message.title}
+                {message.title || message.Title}
               </h2>
               <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
-                <span>{message.service}</span>
+                <span>{message.service || message.Services?.[0] || 'Microsoft 365'}</span>
                 <span>•</span>
-                <span>{format(parseISO(message.publishedDate), 'MMM d, yyyy')}</span>
+                <span>{format(parseISO(message.publishedDate || message.StartDateTime || new Date().toISOString()), 'MMM d, yyyy')}</span>
               </div>
             </div>
           </div>
           <div className="flex items-center space-x-4">
             <span className={`px-3 py-1 text-sm font-medium rounded-full ${
-              message.severity === 'high' 
+              message.severity === MessageSeverity.HIGH
                 ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                : message.severity === 'normal'
+                : message.severity === MessageSeverity.INFORMATIONAL
                 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                 : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
             }`}>
@@ -81,7 +85,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onMarkAsRead }) => {
         </p>
         
         <div className="mt-4 flex flex-wrap gap-2">
-          {message.tags.slice(0, 3).map((tag, index) => (
+          {(message.tags || message.Tags || []).slice(0, 3).map((tag, index) => (
             <span 
               key={index}
               className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full"
@@ -89,9 +93,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onMarkAsRead }) => {
               {tag}
             </span>
           ))}
-          {message.tags.length > 3 && (
+          {(message.tags || message.Tags || []).length > 3 && (
             <span className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
-              +{message.tags.length - 3} more
+              +{(message.tags || message.Tags || []).length - 3} more
             </span>
           )}
         </div>

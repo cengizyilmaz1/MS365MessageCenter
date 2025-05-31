@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import StructuredData from '../components/StructuredData';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { generateMessageId } from '../utils/slug';
 
 // Map actual values to our enums
 const mapSeverity = (severity: string): MessageSeverity => {
@@ -43,7 +44,7 @@ const getLatestCsvUrl = async (): Promise<string | null> => {
 };
 
 const MessageDetail: React.FC = () => {
-  const { title } = useParams<{ title: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { messages, markAsRead } = useMessages();
   const [copiedLink, setCopiedLink] = useState(false);
@@ -51,9 +52,13 @@ const MessageDetail: React.FC = () => {
   const [selectedPosts, setSelectedPosts] = useState<BlogPost[]>([]);
   const { trackMessageView, trackExternalLink } = useAnalytics();
 
-  const message = messages.find(
-    (msg) => (msg.title || msg.Title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === title
-  );
+  // Find message by slug-based ID
+  const message = messages.find((msg) => {
+    const title = msg.title || msg.Title || '';
+    const msgId = msg.id || msg.Id || '';
+    const messageSlugId = generateMessageId(title, msgId.toString());
+    return messageSlugId === id;
+  });
 
   useEffect(() => {
     if (message && !message.isRead) {
@@ -186,9 +191,9 @@ const MessageDetail: React.FC = () => {
 
   // Add SEO metadata for the message
   const messageTitle = message.title || message.Title || '';
-  const messageDescription = message.summary || message.Summary || messageTitle;
+  const messageDescription = message.summary || messageTitle;
   const messageTags = message.tags || message.Tags || [];
-  const publishedDate = message.publishedDate || message.StartDateTime || message.CreatedDateTime;
+  const publishedDate = message.publishedDate || message.StartDateTime;
   const modifiedDate = message.lastModifiedDate || message.LastModifiedDateTime || publishedDate;
 
   const getSeverityBadge = (severity: MessageSeverity) => {
@@ -424,11 +429,7 @@ const MessageDetail: React.FC = () => {
       />
       <StructuredData 
         type="article"
-        title={messageTitle}
-        description={messageDescription}
-        publishedTime={publishedDate}
-        modifiedTime={modifiedDate}
-        tags={messageTags}
+        message={message}
       />
       <Helmet>
         <title>{pageTitle}</title>
